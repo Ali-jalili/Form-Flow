@@ -8,12 +8,13 @@ import ResponsesPage from "./pages/ResponsesPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./features/Auth/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        {" "}
+        <Toaster position="top-right" />{" "}
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/builder/:formId" element={<FormBuilderPage />} />
