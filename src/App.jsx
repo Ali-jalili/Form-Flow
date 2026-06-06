@@ -1,10 +1,26 @@
 /** @format */
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardPage from "./pages/DashboardPage";
+import FormBuilderPage from "./pages/FormBuilderPage";
+import PublicFormPage from "./pages/PublicFormPage";
+import ResponsesPage from "./pages/ResponsesPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-gray-800">FormFlow</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/builder/:formId" element={<FormBuilderPage />} />
+        <Route path="/form/:publicId" element={<PublicFormPage />} />
+        <Route path="/responses/:formId" element={<ResponsesPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="*" element={<div> NotFoundPage </div>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
