@@ -23,10 +23,11 @@ function AuthProvider({ children }) {
       },
     );
 
-    supabase.auth.getSession().then(({ data: session }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
       }
+      setIsLoading(false);
     });
 
     return () => listener.subscription.unsubscribe();
