@@ -15,20 +15,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Header from "./ui/components/Header";
 import HomePage from "./pages/HomePage";
 
-function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 2 * 60 * 1000,
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 2 * 60 * 1000,
     },
-  });
+  },
+});
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
           <Toaster position="top-right" />
-          <ReactQueryDevtools initialIsOpen={true} />
+          <ReactQueryDevtools initialIsOpen={false} />
           <Header />
 
           <Routes>
