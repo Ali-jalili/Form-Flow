@@ -12,6 +12,7 @@ import { AuthProvider } from "./features/Auth/AuthContext";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./features/Auth/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Header from "./ui/components/Header";
 
 function App() {
   const queryClient = new QueryClient({
@@ -27,6 +28,7 @@ function App() {
         <AuthProvider>
           <Toaster position="top-right" />
           <ReactQueryDevtools initialIsOpen={true} />
+          <Header />
 
           <Routes>
             <Route
