@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import createForm from "../../features/form-builder/services/formsService";
+import Spinner from "../Spinner";
 
 function FormsList({ data }) {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ function FormsList({ data }) {
       toast.error(error.message || "Something went wrong");
     }
   }
-
+  if (isLoading) return <Spinner />;
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
