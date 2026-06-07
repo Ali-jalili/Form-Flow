@@ -26,7 +26,7 @@ function SignupPage() {
     try {
       await handleSignup(email, password, name);
       toast.success("Welcome...");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message);
     } finally {

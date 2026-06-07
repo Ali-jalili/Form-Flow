@@ -24,7 +24,7 @@ function LoginPage() {
     try {
       await handleLogin(email, password);
       toast.success("Welcome back...");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message);
     } finally {

@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./features/Auth/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Header from "./ui/components/Header";
+import HomePage from "./pages/HomePage";
 
 function App() {
   const queryClient = new QueryClient({
@@ -31,8 +32,9 @@ function App() {
           <Header />
 
           <Routes>
+            <Route path="/" element={<HomePage />} />
             <Route
-              path="/"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <DashboardPage />
