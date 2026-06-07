@@ -6,10 +6,12 @@ import createForm from "../../features/form-builder/services/formsService";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 function EmptyState() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreateForm() {
@@ -17,6 +19,8 @@ function EmptyState() {
 
     try {
       const newForm = await createForm(user.id);
+      queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
+
       navigate(`/builder/${newForm.id}`);
     } catch (error) {
       setIsLoading(false);
