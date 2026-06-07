@@ -1,8 +1,30 @@
 /** @format */
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../features/Auth/useAuth";
+import createForm from "../../features/form-builder/services/formsService";
+import { useState } from "react";
+import Spinner from "../Spinner";
+import toast from "react-hot-toast";
 
 function EmptyState() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleCreateForm() {
+    setIsLoading(true);
+
+    try {
+      const newForm = await createForm(user.id);
+      navigate(`/builder/${newForm.id}`);
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(error.message || "Something went wrong");
+    }
+  }
+
+  if (isLoading) return <Spinner />;
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -12,12 +34,13 @@ function EmptyState() {
       <p className="text-sm text-gray-500 mb-6 max-w-sm">
         Create your first form and start collecting responses
       </p>
-      <Link
-        to="/builder/new"
+      <button
+        disabled={isLoading}
+        onClick={handleCreateForm}
         className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors inline-block"
       >
         Create New Form
-      </Link>
+      </button>
     </div>
   );
 }
