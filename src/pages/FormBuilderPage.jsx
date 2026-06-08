@@ -2,7 +2,7 @@
 
 import { useReducer } from "react";
 import formReducer from "../features/form-builder/utils/formReducer";
-import { Plus } from "lucide-react";
+
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import SortableField from "../features/form-builder/components/SortableField";
@@ -10,6 +10,10 @@ import { saveFormFields } from "../features/form-builder/services/formsService";
 import { useParams } from "react-router-dom";
 import useFormFields from "../features/form-builder/hooks/useFormFields";
 import { useEffect } from "react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import Spinner from "../ui/components/Spinner";
+import { Plus } from "lucide-react";
 
 const initialState = {
   title: "Untitled Form",
@@ -17,6 +21,7 @@ const initialState = {
 };
 
 function FormBuilderPage() {
+  const [isSaving, setIsSaving] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
 
   const { fields, title } = state;
@@ -43,7 +48,16 @@ function FormBuilderPage() {
   }
 
   async function handleSave() {
-    await saveFormFields(formId, fields);
+    setIsSaving(true);
+    try {
+      await saveFormFields(formId, fields);
+      toast.success("Form saved successfully!");
+      // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      toast.error("Failed to save form. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   useEffect(() => {
@@ -73,16 +87,19 @@ function FormBuilderPage() {
 
           <button
             onClick={handleSave}
+            disabled={isSaving}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md text-sm flex-shrink-0 ml-4"
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </button>
         </div>
 
         {/* Fields */}
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={fields.map((f) => f.id)}>
-            {fields.length === 0 ? (
+            {fieldsLoading ? (
+              <Spinner />
+            ) : fields.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Plus className="w-8 h-8 text-indigo-500" />

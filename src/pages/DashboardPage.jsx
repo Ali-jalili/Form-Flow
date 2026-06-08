@@ -1,7 +1,7 @@
 /** @format */
 
 import useForms from "../features/form-builder/hooks/useForms";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/components/Spinner";
 import ErrorMessage from "../ui/components/ErrorMessage";
 
 import EmptyState from "../ui/components/EmptyState";
