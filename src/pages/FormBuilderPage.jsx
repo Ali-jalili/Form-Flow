@@ -8,6 +8,8 @@ import { SortableContext } from "@dnd-kit/sortable";
 import SortableField from "../features/form-builder/components/SortableField";
 import { saveFormFields } from "../features/form-builder/services/formsService";
 import { useParams } from "react-router-dom";
+import useFormFields from "../features/form-builder/hooks/useFormFields";
+import { useEffect } from "react";
 
 const initialState = {
   title: "Untitled Form",
@@ -19,6 +21,7 @@ function FormBuilderPage() {
 
   const { fields, title } = state;
   const { formId } = useParams();
+  const { data: fieldsData, isLoading: fieldsLoading } = useFormFields(formId);
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -42,6 +45,12 @@ function FormBuilderPage() {
   async function handleSave() {
     await saveFormFields(formId, fields);
   }
+
+  useEffect(() => {
+    if (fieldsData) {
+      dispatch({ type: "SET_FIELDS", payload: fieldsData });
+    }
+  }, [fieldsData]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

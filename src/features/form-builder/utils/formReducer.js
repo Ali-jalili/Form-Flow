@@ -46,6 +46,10 @@ function formReducer(state, action) {
       newFields.forEach((field, index) => (field.order = index + 1));
       return { ...state, fields: newFields };
     }
+
+    case "SET_FIELDS": {
+      return { ...state, fields: action.payload };
+    }
   }
 }
 
