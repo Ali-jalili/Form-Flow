@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import SortableField from "../features/form-builder/components/SortableField";
+import { saveFormFields } from "../features/form-builder/services/formsService";
+import { useParams } from "react-router-dom";
 
 const initialState = {
   title: "Untitled Form",
@@ -16,6 +18,7 @@ function FormBuilderPage() {
   const [state, dispatch] = useReducer(formReducer, initialState);
 
   const { fields, title } = state;
+  const { formId } = useParams();
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -36,6 +39,10 @@ function FormBuilderPage() {
     });
   }
 
+  async function handleSave() {
+    await saveFormFields(formId, fields);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Editor - Left */}
@@ -54,6 +61,13 @@ function FormBuilderPage() {
             }
             className="w-full text-3xl font-bold text-gray-900 border-none outline-none placeholder:text-gray-300 bg-transparent"
           />
+
+          <button
+            onClick={handleSave}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md text-sm flex-shrink-0 ml-4"
+          >
+            Save
+          </button>
         </div>
 
         {/* Fields */}

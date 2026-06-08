@@ -16,4 +16,24 @@ async function createForm(userId) {
   return data;
 }
 
-export default createForm;
+async function saveFormFields(formId, fields) {
+  const fieldsToInsert = fields.map((field) => ({
+    id: field.id,
+    form_id: formId,
+    type: field.type,
+    label: field.label,
+    required: field.required,
+    options: field.options,
+    order: field.order,
+  }));
+
+  const { data, error } = await supabase
+    .from("form_fields")
+    .upsert(fieldsToInsert, { onConflict: "id" })
+    .select();
+
+  if (error) throw error.message;
+  return data;
+}
+
+export { createForm, saveFormFields };

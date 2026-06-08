@@ -5,7 +5,7 @@ import useAuth from "../../features/Auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import createForm from "../../features/form-builder/services/formsService";
+import { createForm } from "../../features/form-builder/services/formsService";
 import Spinner from "../Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 

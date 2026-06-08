@@ -2,7 +2,7 @@
 
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../features/Auth/useAuth";
-import createForm from "../../features/form-builder/services/formsService";
+import { createForm } from "../../features/form-builder/services/formsService";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import toast from "react-hot-toast";
