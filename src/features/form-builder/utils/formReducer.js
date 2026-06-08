@@ -47,9 +47,12 @@ function formReducer(state, action) {
       return { ...state, fields: newFields };
     }
 
-    case "SET_FIELDS": {
-      return { ...state, fields: action.payload };
-    }
+    case "LOAD_FORM":
+      return {
+        ...state,
+        title: action.payload.title,
+        fields: action.payload.fields,
+      };
   }
 }
 

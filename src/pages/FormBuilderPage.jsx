@@ -14,15 +14,15 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Spinner from "../ui/components/Spinner";
 import { Plus } from "lucide-react";
+import useForms from "../features/form-builder/hooks/useForms";
 
-const initialState = {
-  title: "Untitled Form",
-  fields: [],
-};
+const initialState = { title: "", fields: [] };
 
 function FormBuilderPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const { data: formsList } = useForms();
+  const formData = formsList?.find((f) => f.id === formId);
 
   const { fields, title } = state;
   const { formId } = useParams();
@@ -52,8 +52,7 @@ function FormBuilderPage() {
     try {
       await saveFormFields(formId, fields);
       toast.success("Form saved successfully!");
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch {
       toast.error("Failed to save form. Please try again.");
     } finally {
       setIsSaving(false);
@@ -61,11 +60,13 @@ function FormBuilderPage() {
   }
 
   useEffect(() => {
-    if (fieldsData) {
-      dispatch({ type: "SET_FIELDS", payload: fieldsData });
+    if (fieldsData && formData) {
+      dispatch({
+        type: "LOAD_FORM",
+        payload: { title: formData.title, fields: fieldsData },
+      });
     }
-  }, [fieldsData]);
-
+  }, [fieldsData, formData]);
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Editor - Left */}
