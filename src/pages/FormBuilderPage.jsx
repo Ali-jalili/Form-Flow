@@ -2,7 +2,10 @@
 
 import { useReducer } from "react";
 import formReducer from "../features/form-builder/utils/formReducer";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus } from "lucide-react";
+import { DndContext } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
+import SortableField from "../features/form-builder/components/SortableField";
 
 const initialState = {
   title: "Untitled Form",
@@ -19,8 +22,18 @@ function FormBuilderPage() {
     dispatch({ type: "ADD_FIELD", payload: { type: e.target.value } });
   }
 
-  function deleteField(id) {
-    dispatch({ type: "DELETE_FIELD", payload: { id } });
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = fields.findIndex((f) => f.id === active.id);
+    const newIndex = fields.findIndex((f) => f.id === over.id);
+
+    dispatch({
+      type: "REORDER_FIELDS",
+      payload: { fromIndex: oldIndex, toIndex: newIndex },
+    });
   }
 
   return (
@@ -44,78 +57,42 @@ function FormBuilderPage() {
         </div>
 
         {/* Fields */}
-        {fields.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-8 h-8 text-indigo-500" />
-            </div>
-            <p className="text-gray-500 text-sm">
-              No fields yet. Add your first field below.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {fields.map((item) => (
-              <div
-                key={item.id}
-                className="group flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-4 hover:border-indigo-300 hover:shadow-sm transition-all duration-200"
-              >
-                {/* Drag Handle */}
-                <div className="mt-2 text-gray-300 group-hover:text-gray-500 cursor-grab transition-colors">
-                  <GripVertical className="w-5 h-5" />
+        <DndContext onDragEnd={handleDragEnd}>
+          <SortableContext items={fields.map((f) => f.id)}>
+            {fields.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-8 h-8 text-indigo-500" />
                 </div>
-
-                {/* Field Content */}
-                <div className="flex-1 space-y-2">
-                  <input
-                    placeholder="Enter field label..."
-                    type="text"
-                    value={item.label}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "UPDATE_FIELD",
-                        payload: {
-                          id: item.id,
-                          changes: { label: e.target.value },
-                        },
-                      })
-                    }
-                    className="w-full text-base font-medium text-gray-800 border-none outline-none placeholder:text-gray-400 bg-transparent"
-                  />
-                  <span className="inline-block text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-                    {item.type === "short_text"
-                      ? "Short Text"
-                      : item.type === "long_text"
-                        ? "Long Text"
-                        : "Multiple Choice"}
-                  </span>
-                </div>
-
-                {/* Delete */}
-                <button
-                  onClick={() => deleteField(item.id)}
-                  className="mt-1 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <p className="text-gray-500 text-sm">
+                  No fields yet. Add your first field below.
+                </p>
               </div>
-            ))}
-          </div>
-        )}
+            ) : (
+              <div className="space-y-3">
+                {fields.map((item) => (
+                  <SortableField
+                    key={item.id}
+                    field={item}
+                    dispatch={dispatch}
+                  />
+                ))}
+              </div>
+            )}
+          </SortableContext>
+        </DndContext>
 
         {/* Add Field */}
         <div className="mt-6 border-t border-gray-100 pt-6">
-          <div className="relative">
-            <select
-              onChange={(e) => addField(e)}
-              className="w-full appearance-none bg-white border border-gray-300 hover:border-indigo-400 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-            >
-              <option value="Add Field...">+ Add Field...</option>
-              <option value="short_text">Short Text</option>
-              <option value="long_text">Long Text</option>
-              <option value="multiple_choice">Multiple Choice</option>
-            </select>
-          </div>
+          <select
+            onChange={(e) => addField(e)}
+            className="w-full appearance-none bg-white border border-gray-300 hover:border-indigo-400 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          >
+            <option value="Add Field...">+ Add Field...</option>
+            <option value="short_text">Short Text</option>
+            <option value="long_text">Long Text</option>
+            <option value="multiple_choice">Multiple Choice</option>
+          </select>
         </div>
       </div>
 
@@ -127,15 +104,12 @@ function FormBuilderPage() {
           </h2>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-            {/* Title */}
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
               {title || "Untitled Form"}
             </h1>
 
-            {/* Divider */}
             <div className="h-px bg-gray-200 my-6" />
 
-            {/* Fields */}
             <div className="space-y-6">
               {fields.length === 0 ? (
                 <p className="text-gray-400 text-sm text-center py-12">

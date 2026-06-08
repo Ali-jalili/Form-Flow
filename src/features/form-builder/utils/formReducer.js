@@ -37,6 +37,15 @@ function formReducer(state, action) {
     case "SET_TITLE": {
       return { ...state, title: action.payload.title };
     }
+
+    case "REORDER_FIELDS": {
+      const newFields = [...state.fields];
+      const [moved] = newFields.splice(action.payload.fromIndex, 1);
+      newFields.splice(action.payload.toIndex, 0, moved);
+
+      newFields.forEach((field, index) => (field.order = index + 1));
+      return { ...state, fields: newFields };
+    }
   }
 }
 
