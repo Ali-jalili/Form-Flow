@@ -17,6 +17,15 @@ async function createForm(userId) {
 }
 
 async function saveFormFields(formId, fields) {
+  const { error: deleteError } = await supabase
+    .from("form_fields")
+    .delete()
+    .eq("form_id", formId);
+
+  if (deleteError) throw deleteError.message;
+
+  if (fields.length === 0) return;
+
   const fieldsToInsert = fields.map((field) => ({
     id: field.id,
     form_id: formId,
@@ -29,7 +38,7 @@ async function saveFormFields(formId, fields) {
 
   const { data, error } = await supabase
     .from("form_fields")
-    .upsert(fieldsToInsert, { onConflict: "id" })
+    .insert(fieldsToInsert)
     .select();
 
   if (error) throw error.message;

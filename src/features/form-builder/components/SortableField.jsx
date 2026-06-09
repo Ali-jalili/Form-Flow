@@ -50,6 +50,46 @@ function SortableField({ field, dispatch }) {
             : field.type === "long_text"
               ? "Long Text"
               : "Multiple Choice"}
+
+          {field.type === "multiple_choice" && (
+            <div className="space-y-2 ml-2">
+              {field.options?.map((opt, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">○</span>
+                  <span className="text-sm text-gray-600">{opt}</span>
+                  <button
+                    onClick={() => {
+                      const newOptions = field.options.filter(
+                        (_, idx) => idx !== i,
+                      );
+                      dispatch({
+                        type: "UPDATE_FIELD",
+                        payload: {
+                          id: field.id,
+                          changes: { options: newOptions },
+                        },
+                      });
+                    }}
+                    className="text-gray-400 hover:text-red-500 text-xs"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={() => {
+                  const newOptions = [...(field.options || []), "New Option"];
+                  dispatch({
+                    type: "UPDATE_FIELD",
+                    payload: { id: field.id, changes: { options: newOptions } },
+                  });
+                }}
+                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-2"
+              >
+                + Add Option
+              </button>
+            </div>
+          )}
         </span>
       </div>
 

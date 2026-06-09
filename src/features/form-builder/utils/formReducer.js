@@ -8,6 +8,7 @@ function formReducer(state, action) {
         type: action.payload.type,
         label: "",
         required: false,
+        options: action.payload.type === "multiple_choice" ? ["Option 1"] : [],
         order: state.fields.length + 1,
       };
 

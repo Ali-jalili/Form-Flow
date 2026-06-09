@@ -58,8 +58,7 @@ function FormBuilderPage() {
     setIsSaving(true);
     try {
       await saveFormFields(formId, fields);
-      console.log("Title being saved:", title);
-      console.log("Form ID:", formId);
+
       await updateFormTitle(formId, title);
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
       toast.success("Form saved successfully!");
@@ -252,21 +251,20 @@ function FormBuilderPage() {
                           className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-400 text-sm resize-none transition-colors group-hover:border-gray-300"
                         />
                       )}
+
                       {field.type === "multiple_choice" && (
                         <div className="space-y-2">
-                          {["Option 1", "Option 2", "Option 3"].map(
-                            (opt, i) => (
-                              <label
-                                key={i}
-                                className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
-                              >
-                                <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex-shrink-0" />
-                                <span className="text-sm text-gray-500">
-                                  {opt}
-                                </span>
-                              </label>
-                            ),
-                          )}
+                          {field.options?.map((opt, i) => (
+                            <label
+                              key={i}
+                              className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+                            >
+                              <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex-shrink-0" />
+                              <span className="text-sm text-gray-500">
+                                {opt}
+                              </span>
+                            </label>
+                          ))}
                         </div>
                       )}
                     </div>
