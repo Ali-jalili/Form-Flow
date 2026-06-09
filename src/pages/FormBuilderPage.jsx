@@ -4,15 +4,20 @@ import { useReducer, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { Plus, Save, Eye, Settings, ArrowLeft } from "lucide-react";
+import { Plus, Save, Eye, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 
 import formReducer from "../features/form-builder/utils/formReducer";
 import SortableField from "../features/form-builder/components/SortableField";
-import { saveFormFields } from "../features/form-builder/services/formsService";
+import {
+  saveFormFields,
+  updateFormTitle,
+} from "../features/form-builder/services/formsService";
 import useFormFields from "../features/form-builder/hooks/useFormFields";
 import useForms from "../features/form-builder/hooks/useForms";
 import Spinner from "../ui/components/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import useAuth from "../features/Auth/useAuth";
 
 const initialState = { title: "", fields: [] };
 
@@ -20,11 +25,14 @@ function FormBuilderPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const { user } = useAuth();
+  // ...
 
   const { formId } = useParams();
   const { data: formsList } = useForms();
   const formData = formsList?.find((f) => f.id === formId);
   const { data: fieldsData, isLoading: fieldsLoading } = useFormFields(formId);
+  const queryClient = useQueryClient();
 
   const { fields, title } = state;
 
@@ -50,6 +58,10 @@ function FormBuilderPage() {
     setIsSaving(true);
     try {
       await saveFormFields(formId, fields);
+      console.log("Title being saved:", title);
+      console.log("Form ID:", formId);
+      await updateFormTitle(formId, title);
+      queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
       toast.success("Form saved successfully!");
     } catch {
       toast.error("Failed to save form. Please try again.");

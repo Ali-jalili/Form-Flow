@@ -36,4 +36,12 @@ async function saveFormFields(formId, fields) {
   return data;
 }
 
-export { createForm, saveFormFields };
+async function updateFormTitle(formId, title) {
+  const { error } = await supabase
+    .from("forms")
+    .update({ title })
+    .eq("id", formId);
+  if (error) throw error.message;
+}
+
+export { createForm, saveFormFields, updateFormTitle };
