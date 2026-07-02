@@ -53,4 +53,16 @@ async function updateFormTitle(formId, title) {
   if (error) throw error.message;
 }
 
-export { createForm, saveFormFields, updateFormTitle };
+async function publishForm(formId) {
+  const publicId = crypto.randomUUID();
+
+  const { error } = await supabase
+    .from("forms")
+    .update({ is_published: true, public_id: publicId })
+    .eq("id", formId);
+
+  if (error) throw error.message;
+  return publicId;
+}
+
+export { createForm, saveFormFields, updateFormTitle, publishForm };

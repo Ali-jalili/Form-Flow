@@ -6,35 +6,36 @@ import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { Plus, Save, Eye, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 import formReducer from "../features/form-builder/utils/formReducer";
 import SortableField from "../features/form-builder/components/SortableField";
 import {
+  publishForm,
   saveFormFields,
   updateFormTitle,
 } from "../features/form-builder/services/formsService";
 import useFormFields from "../features/form-builder/hooks/useFormFields";
 import useForms from "../features/form-builder/hooks/useForms";
 import Spinner from "../ui/components/Spinner";
-import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../features/Auth/useAuth";
+import { Globe } from "lucide-react";
 
 const initialState = { title: "", fields: [] };
 
 function FormBuilderPage() {
+  const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
-  const { user } = useAuth();
-  // ...
-
   const { formId } = useParams();
   const { data: formsList } = useForms();
-  const formData = formsList?.find((f) => f.id === formId);
   const { data: fieldsData, isLoading: fieldsLoading } = useFormFields(formId);
   const queryClient = useQueryClient();
-
   const { fields, title } = state;
+
+  const formData = formsList?.find((f) => f.id === formId);
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -86,6 +87,16 @@ function FormBuilderPage() {
     );
   }
 
+  async function handlePublish() {
+    try {
+      const publicId = await publishForm(formId);
+      toast.success(`Form published! Link: /form/${publicId}`);
+      queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
+    } catch {
+      toast.error("Failed to publish form.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
       {/* Top Bar */}
@@ -128,6 +139,15 @@ function FormBuilderPage() {
             >
               <Save className="w-4 h-4" />
               {isSaving ? "Saving..." : "Save"}
+            </button>
+
+            <button
+              disabled={isPublishing}
+              onClick={handlePublish}
+              className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md text-sm"
+            >
+              <Globe className="w-4 h-4" />
+              Publish
             </button>
           </div>
         </div>
