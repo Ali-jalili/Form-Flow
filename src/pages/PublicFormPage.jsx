@@ -28,13 +28,13 @@ function PublicFormPage() {
       toast.success("Response submitted!");
       setIsSubmitted(true);
       setAnswers({});
-    } catch {
+    } catch (error) {
+      console.error("Submit error:", error.message, error);
       toast.error("Failed to submit response.");
     } finally {
       setIsSubmitting(false);
     }
   }
-
   if (isSubmitted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30 px-4">
