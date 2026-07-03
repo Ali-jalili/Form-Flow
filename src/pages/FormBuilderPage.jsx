@@ -48,6 +48,7 @@ function FormBuilderPage() {
   function addField(e) {
     if (e.target.value === "Add Field...") return;
     dispatch({ type: "ADD_FIELD", payload: { type: e.target.value } });
+    e.target.value = "Add Field...";
   }
 
   function handleDragEnd(event) {
