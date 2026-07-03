@@ -25,7 +25,14 @@ function FormCard({ dataForm }) {
             : "bg-gray-100 text-gray-600"
         }`}
       >
-        {dataForm.is_published ? "Published" : "Draft"}
+        {dataForm.is_published && (
+          <Link
+            to={`/responses/${dataForm.id}`}
+            className="text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-2 inline-block"
+          >
+            View Responses →
+          </Link>
+        )}
       </span>
     </Link>
   );
