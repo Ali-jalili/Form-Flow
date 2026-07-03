@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Header from "./ui/components/Header";
 import HomePage from "./pages/HomePage";
 import Footer from "./ui/components/Footer";
+import NotFoundPage from "./pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,7 +64,7 @@ function App() {
                 />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
-                <Route path="*" element={<div> NotFoundPage </div>} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
             <Footer />
