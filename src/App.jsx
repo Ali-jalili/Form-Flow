@@ -31,41 +31,43 @@ function App() {
         <AuthProvider>
           <Toaster position="top-right" />
           <ReactQueryDevtools initialIsOpen={false} />
-          <Header />
-
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/builder/:formId"
-              element={
-                <ProtectedRoute>
-                  <FormBuilderPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/form/:publicId" element={<PublicFormPage />} />
-            <Route
-              path="/responses/:formId"
-              element={
-                <ProtectedRoute>
-                  <ResponsesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="*" element={<div> NotFoundPage </div>} />
-          </Routes>
-
-          <Footer />
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/builder/:formId"
+                  element={
+                    <ProtectedRoute>
+                      <FormBuilderPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/form/:publicId" element={<PublicFormPage />} />
+                <Route
+                  path="/responses/:formId"
+                  element={
+                    <ProtectedRoute>
+                      <ResponsesPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="*" element={<div> NotFoundPage </div>} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
