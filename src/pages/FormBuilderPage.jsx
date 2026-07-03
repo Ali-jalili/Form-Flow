@@ -4,15 +4,7 @@ import { useReducer, useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import {
-  Plus,
-  Save,
-  Eye,
-  ArrowLeft,
-  Globe,
-  Sparkles,
-  Grip,
-} from "lucide-react";
+import { Save, Eye, ArrowLeft, Globe, Sparkles, Grip } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 

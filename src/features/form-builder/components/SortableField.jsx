@@ -63,7 +63,24 @@ function SortableField({ field, dispatch }) {
             {field.options?.map((opt, i) => (
               <div key={i} className="flex items-center gap-2.5 group/opt">
                 <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
-                <span className="text-sm text-gray-600 flex-1">{opt}</span>
+                <input
+                  type="text"
+                  value={opt}
+                  onChange={(e) => {
+                    const newOptions = field.options.map((o, idx) =>
+                      idx === i ? e.target.value : o,
+                    );
+                    dispatch({
+                      type: "UPDATE_FIELD",
+                      payload: {
+                        id: field.id,
+                        changes: { options: newOptions },
+                      },
+                    });
+                  }}
+                  className="text-sm text-gray-600 flex-1 border-none outline-none bg-transparent p-0"
+                  placeholder="Option..."
+                />
                 <button
                   onClick={() => {
                     const newOptions = field.options.filter(
