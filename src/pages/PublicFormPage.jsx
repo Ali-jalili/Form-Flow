@@ -7,11 +7,12 @@ import ErrorMessage from "../ui/components/ErrorMessage";
 import { useState } from "react";
 import { submitResponse } from "../features/form-builder/services/formsService";
 import toast from "react-hot-toast";
-import { Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle, Loader2 } from "lucide-react";
 
 function PublicFormPage() {
   const [answers, setAnswers] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { publicId } = useParams();
 
   const { data, isLoading, error } = usePublicForm(publicId);
@@ -21,6 +22,7 @@ function PublicFormPage() {
   if (error) return <ErrorMessage message={error.message} />;
 
   async function handleSubmit() {
+    setIsSubmitting(true);
     try {
       await submitResponse(data.form.id, answers);
       toast.success("Response submitted!");
@@ -28,13 +30,15 @@ function PublicFormPage() {
       setAnswers({});
     } catch {
       toast.error("Failed to submit response.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-12 max-w-md w-full text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30 px-4">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-8 sm:p-12 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-emerald-500" />
           </div>
@@ -51,11 +55,9 @@ function PublicFormPage() {
 
   if (data)
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 py-8 px-4">
         <div className="max-w-2xl mx-auto">
-          {/* Form Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
-            {/* Title */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               {data.form.title}
             </h1>
@@ -65,7 +67,6 @@ function PublicFormPage() {
 
             <div className="h-px bg-gray-100 my-6" />
 
-            {/* Fields */}
             <div className="space-y-6">
               {data.fields.map((field) => (
                 <div key={field.id} className="space-y-2">
@@ -81,7 +82,7 @@ function PublicFormPage() {
                       }
                       type="text"
                       placeholder="Type your answer..."
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                     />
                   )}
 
@@ -93,7 +94,7 @@ function PublicFormPage() {
                       }
                       rows={3}
                       placeholder="Type your answer..."
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm resize-none"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm resize-none"
                     />
                   )}
 
@@ -105,7 +106,7 @@ function PublicFormPage() {
                           onClick={() =>
                             setAnswers({ ...answers, [field.id]: opt })
                           }
-                          className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                          className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
                             answers[field.id] === opt
                               ? "border-indigo-400 bg-indigo-50"
                               : "border-gray-200 hover:border-gray-300"
@@ -127,14 +128,23 @@ function PublicFormPage() {
               ))}
             </div>
 
-            {/* Submit */}
             <div className="mt-8">
               <button
                 onClick={handleSubmit}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
               >
-                <Send className="w-4 h-4" />
-                Submit
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Submit
+                  </>
+                )}
               </button>
             </div>
           </div>
