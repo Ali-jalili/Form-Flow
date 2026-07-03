@@ -180,19 +180,6 @@ function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white/50">
-        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-gray-500">
-            <FileText className="w-5 h-5 text-indigo-500" />
-            <span className="font-semibold text-gray-700">FormFlow</span>
-          </div>
-          <p className="text-sm text-gray-400">
-            © 2025 FormFlow. Built with ❤️ for developers.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

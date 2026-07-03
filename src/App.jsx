@@ -14,6 +14,7 @@ import ProtectedRoute from "./features/Auth/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Header from "./ui/components/Header";
 import HomePage from "./pages/HomePage";
+import Footer from "./ui/components/Footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +64,8 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="*" element={<div> NotFoundPage </div>} />
           </Routes>
+
+          <Footer />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
