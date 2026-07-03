@@ -3,21 +3,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../lib/supabaseClient";
 
-function useFormFields(formId) {
-  async function feachFormFields() {
+function useForm(formId) {
+  async function fetchForm() {
     const { data, error } = await supabase
-      .from("form_fields")
+      .from("forms")
       .select("*")
-      .eq("form_id", formId);
+      .eq("id", formId)
+      .single();
 
     if (error) throw new Error(error.message);
-
     return data;
   }
 
   const { data, isLoading, isFetching, isFetched, error } = useQuery({
-    queryKey: ["form_fields", formId],
-    queryFn: feachFormFields,
+    queryKey: ["form", formId],
+    queryFn: fetchForm,
     enabled: !!formId,
     staleTime: 0,
     refetchOnMount: "always",
@@ -26,4 +26,4 @@ function useFormFields(formId) {
   return { data, isLoading, isFetching, isFetched, error };
 }
 
-export default useFormFields;
+export default useForm;

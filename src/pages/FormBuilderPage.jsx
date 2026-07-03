@@ -1,6 +1,6 @@
 /** @format */
 
-import { useReducer, useEffect, useState } from "react";
+import { useReducer, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
@@ -28,23 +28,37 @@ function FormBuilderPage() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState(null);
   const { formId } = useParams();
   const { data: formsList } = useForms();
-  const { data: fieldsData, isLoading: fieldsLoading } = useFormFields(formId);
+  const {
+    data: fieldsData,
+    isLoading: fieldsLoading,
+    isFetching: fieldsFetching,
+    isFetched: fieldsFetched,
+  } = useFormFields(formId);
   const queryClient = useQueryClient();
   const { fields, title } = state;
+  const hasLoadedRef = useRef(false);
 
   const formData = formsList?.find((f) => f.id === formId);
 
-  // اینجا LOAD_FORM فقط یک بار و فقط با تغییر formId اجرا می‌شود.
   useEffect(() => {
-    if (fieldsData && formData) {
-      dispatch({
-        type: "LOAD_FORM",
-        payload: { title: formData.title, fields: fieldsData },
-      });
-    }
-  }, [formId, fieldsData, formData]); // این تضمین می‌کند وقتی داده آماده شد، لود شود.
+    hasLoadedRef.current = false;
+  }, [formId]);
+
+  useEffect(() => {
+    if (!formId) return;
+    if (!fieldsFetched || fieldsFetching || !formData || hasLoadedRef.current)
+      return;
+
+    dispatch({
+      type: "LOAD_FORM",
+      payload: { title: formData.title, fields: fieldsData || [] },
+    });
+    setLastSavedSnapshot({ title: formData.title, fields: fieldsData || [] });
+    hasLoadedRef.current = true;
+  }, [fieldsData, fieldsFetched, fieldsFetching, formData, formId]);
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -70,11 +84,9 @@ function FormBuilderPage() {
     try {
       await saveFormFields(formId, fields);
       await updateFormTitle(formId, title);
-
-      // مهم: فقط کش رو بی‌اعتبار کن، نه اینکه refetch کنی.
+      setLastSavedSnapshot({ title, fields });
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
       queryClient.invalidateQueries({ queryKey: ["form_fields", formId] });
-
       toast.success("Form saved successfully!");
     } catch {
       toast.error("Failed to save form. Please try again.");
@@ -95,6 +107,11 @@ function FormBuilderPage() {
       setIsPublishing(false);
     }
   }
+
+  const isDirty =
+    !lastSavedSnapshot ||
+    JSON.stringify(fields) !== JSON.stringify(lastSavedSnapshot.fields) ||
+    title !== lastSavedSnapshot.title;
 
   if (fieldsLoading && formId) {
     return (
@@ -161,7 +178,7 @@ function FormBuilderPage() {
 
             {/* Publish */}
             <button
-              disabled={isPublishing}
+              disabled={isPublishing || isDirty || fields.length === 0}
               onClick={handlePublish}
               className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
