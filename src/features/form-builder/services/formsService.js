@@ -65,4 +65,24 @@ async function publishForm(formId) {
   return publicId;
 }
 
-export { createForm, saveFormFields, updateFormTitle, publishForm };
+async function submitResponse(formId, answers) {
+  const { data, error } = await supabase
+    .from("responses")
+    .insert({
+      form_id: formId,
+      data: answers,
+    })
+    .select()
+    .single();
+
+  if (error) throw error.message;
+  return data;
+}
+
+export {
+  createForm,
+  saveFormFields,
+  updateFormTitle,
+  publishForm,
+  submitResponse,
+};
