@@ -40,6 +40,7 @@ function FormBuilderPage() {
   const queryClient = useQueryClient();
   const { fields, title } = state;
   const hasLoadedRef = useRef(false);
+  const [publishedUrl, setPublishedUrl] = useState(null);
 
   const formData = formsList?.find((f) => f.id === formId);
 
@@ -59,6 +60,14 @@ function FormBuilderPage() {
     setLastSavedSnapshot({ title: formData.title, fields: fieldsData || [] });
     hasLoadedRef.current = true;
   }, [fieldsData, fieldsFetched, fieldsFetching, formData, formId]);
+
+  useEffect(() => {
+    if (formData?.public_id) {
+      setPublishedUrl(`${window.location.origin}/form/${formData.public_id}`);
+    } else {
+      setPublishedUrl(null);
+    }
+  }, [formData?.public_id]);
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -99,7 +108,9 @@ function FormBuilderPage() {
     setIsPublishing(true);
     try {
       const publicId = await publishForm(formId);
-      toast.success(`Form published! Link: /form/${publicId}`);
+      const url = `${window.location.origin}/form/${publicId}`;
+      setPublishedUrl(url); // لینک کامل رو ذخیره کن
+      toast.success("Form published successfully!");
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
     } catch {
       toast.error("Failed to publish form.");
@@ -190,6 +201,55 @@ function FormBuilderPage() {
           </div>
         </div>
       </header>
+
+      {publishedUrl && (
+        <div className="bg-emerald-50 border-b border-emerald-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm text-emerald-700">
+              <Globe className="w-4 h-4 flex-shrink-0" />
+              <span className="font-medium">Your form is live at:</span>
+              <a
+                href={publishedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-800 underline underline-offset-2 hover:text-emerald-900 font-medium break-all"
+              >
+                {publishedUrl}
+              </a>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(publishedUrl);
+                  toast.success("Link copied to clipboard!");
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-emerald-300 text-emerald-700 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors"
+              >
+                Copy Link
+              </button>
+              <button
+                onClick={() => setPublishedUrl(null)}
+                className="p-1.5 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+              >
+                <span className="sr-only">Dismiss</span>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row h-[calc(100vh-3.5rem)]">
