@@ -34,6 +34,7 @@ function FormBuilderPage() {
   const queryClient = useQueryClient();
   const { fields, title } = state;
   const isSavingRef = useRef(false);
+  const [hasSaved, setHasSaved] = useState(false);
 
   const formData = formsList?.find((f) => f.id === formId);
 
@@ -67,6 +68,7 @@ function FormBuilderPage() {
     } catch {
       toast.error("Failed to save form. Please try again.");
     } finally {
+      setHasSaved(true);
       setIsSaving(false);
       isSavingRef.current = false;
     }
@@ -87,13 +89,14 @@ function FormBuilderPage() {
 
   useEffect(() => {
     if (isSavingRef.current) return;
+    if (hasSaved) return;
     if (fieldsData && formData) {
       dispatch({
         type: "LOAD_FORM",
         payload: { title: formData.title, fields: fieldsData },
       });
     }
-  }, [fieldsData, formData]);
+  }, [fieldsData, formData, hasSaved]);
 
   if (fieldsLoading && formId) {
     return (
