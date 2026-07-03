@@ -57,6 +57,7 @@ function FormBuilderPage() {
 
   async function handleSave() {
     setIsSaving(true);
+    console.log("Saving fields:", fields);
     try {
       await saveFormFields(formId, fields);
 
