@@ -1,10 +1,18 @@
 /** @format */
 
-import { useReducer, useEffect, useState, useRef } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { Save, Eye, ArrowLeft, Globe, Sparkles, Grip } from "lucide-react";
+import {
+  Plus,
+  Save,
+  Eye,
+  ArrowLeft,
+  Globe,
+  Sparkles,
+  Grip,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -33,10 +41,18 @@ function FormBuilderPage() {
   const { data: fieldsData, isLoading: fieldsLoading } = useFormFields(formId);
   const queryClient = useQueryClient();
   const { fields, title } = state;
-  const isSavingRef = useRef(false);
-  const [hasSaved, setHasSaved] = useState(false);
 
   const formData = formsList?.find((f) => f.id === formId);
+
+  // اینجا LOAD_FORM فقط یک بار و فقط با تغییر formId اجرا می‌شود.
+  useEffect(() => {
+    if (fieldsData && formData) {
+      dispatch({
+        type: "LOAD_FORM",
+        payload: { title: formData.title, fields: fieldsData },
+      });
+    }
+  }, [formId, fieldsData, formData]); // این تضمین می‌کند وقتی داده آماده شد، لود شود.
 
   function addField(e) {
     if (e.target.value === "Add Field...") return;
@@ -58,19 +74,20 @@ function FormBuilderPage() {
   }
 
   async function handleSave() {
-    isSavingRef.current = true;
     setIsSaving(true);
     try {
       await saveFormFields(formId, fields);
       await updateFormTitle(formId, title);
+
+      // مهم: فقط کش رو بی‌اعتبار کن، نه اینکه refetch کنی.
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
+      queryClient.invalidateQueries({ queryKey: ["form_fields", formId] });
+
       toast.success("Form saved successfully!");
     } catch {
       toast.error("Failed to save form. Please try again.");
     } finally {
-      setHasSaved(true);
       setIsSaving(false);
-      isSavingRef.current = false;
     }
   }
 
@@ -86,17 +103,6 @@ function FormBuilderPage() {
       setIsPublishing(false);
     }
   }
-
-  useEffect(() => {
-    if (isSavingRef.current) return;
-    if (hasSaved) return;
-    if (fieldsData && formData) {
-      dispatch({
-        type: "LOAD_FORM",
-        payload: { title: formData.title, fields: fieldsData },
-      });
-    }
-  }, [fieldsData, formData, hasSaved]);
 
   if (fieldsLoading && formId) {
     return (
