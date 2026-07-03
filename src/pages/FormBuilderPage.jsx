@@ -88,12 +88,16 @@ function FormBuilderPage() {
   }
 
   async function handlePublish() {
+    setIsPublishing(true);
     try {
       const publicId = await publishForm(formId);
+
       toast.success(`Form published! Link: /form/${publicId}`);
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
     } catch {
       toast.error("Failed to publish form.");
+    } finally {
+      setIsPublishing(false);
     }
   }
 
