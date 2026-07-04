@@ -29,6 +29,7 @@ function FormBuilderPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [state, dispatch] = useReducer(formReducer, initialState);
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState(null);
+  const [hasUserSaved, setHasUserSaved] = useState(false);
   const { formId } = useParams();
   const { data: formsList } = useForms();
   const {
@@ -46,6 +47,7 @@ function FormBuilderPage() {
 
   useEffect(() => {
     hasLoadedRef.current = false;
+    setHasUserSaved(false);
   }, [formId]);
 
   useEffect(() => {
@@ -94,6 +96,7 @@ function FormBuilderPage() {
       await saveFormFields(formId, fields);
       await updateFormTitle(formId, title);
       setLastSavedSnapshot({ title, fields });
+      setHasUserSaved(true);
       queryClient.invalidateQueries({ queryKey: ["forms", user.id] });
       queryClient.invalidateQueries({ queryKey: ["form_fields", formId] });
       toast.success("Form saved successfully!");
@@ -184,7 +187,7 @@ function FormBuilderPage() {
 
             {/* Publish */}
             <button
-              disabled={isPublishing || isDirty}
+              disabled={isPublishing || isDirty || !hasUserSaved}
               onClick={handlePublish}
               className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
