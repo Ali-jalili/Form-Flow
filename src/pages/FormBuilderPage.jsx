@@ -60,6 +60,7 @@ function FormBuilderPage() {
       payload: { title: formData.title, fields: fieldsData || [] },
     });
     setLastSavedSnapshot({ title: formData.title, fields: fieldsData || [] });
+    setHasUserSaved(true);
     hasLoadedRef.current = true;
   }, [fieldsData, fieldsFetched, fieldsFetching, formData, formId]);
 
@@ -127,6 +128,33 @@ function FormBuilderPage() {
     JSON.stringify(fields) !== JSON.stringify(lastSavedSnapshot.fields) ||
     title !== lastSavedSnapshot.title;
 
+  const getPublishButtonStatus = () => {
+    if (fields.length === 0) {
+      return {
+        disabled: true,
+        tooltip: "Add at least one field to publish",
+      };
+    }
+    if (isDirty) {
+      return {
+        disabled: true,
+        tooltip: "Save your changes before publishing",
+      };
+    }
+    if (!hasUserSaved) {
+      return {
+        disabled: true,
+        tooltip: "Save your form first",
+      };
+    }
+    return {
+      disabled: false,
+      tooltip: "Publish your form to make it live",
+    };
+  };
+
+  const publishStatus = getPublishButtonStatus();
+
   if (fieldsLoading && formId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30">
@@ -176,8 +204,9 @@ function FormBuilderPage() {
             {/* Save */}
             <button
               onClick={handleSave}
-              disabled={isSaving}
-              className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSaving || !isDirty}
+              title={!isDirty ? "No changes to save" : "Save your form"}
+              className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
             >
               <Save className="w-4 h-4" />
               <span className="hidden sm:inline sm:ml-1.5">
@@ -187,9 +216,10 @@ function FormBuilderPage() {
 
             {/* Publish */}
             <button
-              disabled={isPublishing || isDirty || !hasUserSaved}
+              disabled={isPublishing || publishStatus.disabled}
               onClick={handlePublish}
-              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              title={publishStatus.tooltip}
+              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
             >
               <Globe className="w-4 h-4" />
               <span className="hidden sm:inline sm:ml-1.5">
