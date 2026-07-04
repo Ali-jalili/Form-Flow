@@ -32,7 +32,10 @@ async function saveFormFields(formId, fields) {
     type: field.type,
     label: field.label,
     required: field.required,
-    options: field.options,
+    options:
+      field.type === "multiple_choice"
+        ? (field.options || []).filter((opt) => opt && opt.trim() !== "")
+        : field.options,
     order: field.order,
   }));
 
