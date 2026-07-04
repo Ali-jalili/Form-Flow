@@ -102,7 +102,11 @@ function SortableField({ field, dispatch }) {
             ))}
             <button
               onClick={() => {
-                const newOptions = [...(field.options || []), "New Option"];
+                const lastOption = field.options?.[field.options.length - 1];
+                if (lastOption?.trim() === "") {
+                  return;
+                }
+                const newOptions = [...(field.options || []), ""];
                 dispatch({
                   type: "UPDATE_FIELD",
                   payload: { id: field.id, changes: { options: newOptions } },

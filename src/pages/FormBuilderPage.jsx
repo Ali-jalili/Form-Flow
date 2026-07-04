@@ -91,7 +91,26 @@ function FormBuilderPage() {
     });
   }
 
+  function validateFields() {
+    for (const field of fields) {
+      if (!field.label?.trim()) {
+        toast.error("All fields must have a label");
+        return false;
+      }
+      if (field.type === "multiple_choice") {
+        const validOptions = field.options?.filter((opt) => opt?.trim());
+        if (!validOptions?.length) {
+          toast.error(`"${field.label}" must have at least one option`);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   async function handleSave() {
+    if (!validateFields()) return;
+
     setIsSaving(true);
     try {
       await saveFormFields(formId, fields);
@@ -410,17 +429,19 @@ function FormBuilderPage() {
                       )}
                       {field.type === "multiple_choice" && (
                         <div className="space-y-2">
-                          {field.options?.map((opt, i) => (
-                            <div
-                              key={i}
-                              className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl"
-                            >
-                              <div className="w-4 h-4 rounded-full border-2 border-gray-200 flex-shrink-0" />
-                              <span className="text-sm text-gray-500">
-                                {opt}
-                              </span>
-                            </div>
-                          ))}
+                          {field.options
+                            ?.filter((opt) => opt && opt.trim() !== "")
+                            .map((opt, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl"
+                              >
+                                <div className="w-4 h-4 rounded-full border-2 border-gray-200 flex-shrink-0" />
+                                <span className="text-sm text-gray-500">
+                                  {opt}
+                                </span>
+                              </div>
+                            ))}
                         </div>
                       )}
                     </div>

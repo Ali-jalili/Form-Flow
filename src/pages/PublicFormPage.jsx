@@ -21,7 +21,23 @@ function PublicFormPage() {
 
   if (error) return <ErrorMessage message={error.message} />;
 
+  function validateAnswers() {
+    for (const field of data.fields) {
+      // فقط فیلدهای required را بررسی کنید
+      if (field.required) {
+        const answer = answers[field.id];
+        if (!answer || (typeof answer === "string" && answer.trim() === "")) {
+          toast.error(`${field.label} is required`);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   async function handleSubmit() {
+    if (!validateAnswers()) return;
+
     setIsSubmitting(true);
     try {
       await submitResponse(data.form.id, answers);
@@ -72,6 +88,9 @@ function PublicFormPage() {
                 <div key={field.id} className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     {field.label}
+                    {field.required && (
+                      <span className="text-rose-500 ml-1">*</span>
+                    )}
                   </label>
 
                   {field.type === "short_text" && (
@@ -100,28 +119,30 @@ function PublicFormPage() {
 
                   {field.type === "multiple_choice" && (
                     <div className="space-y-2">
-                      {field.options?.map((opt, i) => (
-                        <label
-                          key={i}
-                          onClick={() =>
-                            setAnswers({ ...answers, [field.id]: opt })
-                          }
-                          className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
-                            answers[field.id] === opt
-                              ? "border-indigo-400 bg-indigo-50"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-colors ${
+                      {field.options
+                        ?.filter((opt) => opt && opt.trim() !== "")
+                        .map((opt, i) => (
+                          <label
+                            key={i}
+                            onClick={() =>
+                              setAnswers({ ...answers, [field.id]: opt })
+                            }
+                            className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
                               answers[field.id] === opt
-                                ? "border-indigo-500 bg-indigo-500"
-                                : "border-gray-300"
+                                ? "border-indigo-400 bg-indigo-50"
+                                : "border-gray-200 hover:border-gray-300"
                             }`}
-                          />
-                          <span className="text-sm text-gray-700">{opt}</span>
-                        </label>
-                      ))}
+                          >
+                            <div
+                              className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-colors ${
+                                answers[field.id] === opt
+                                  ? "border-indigo-500 bg-indigo-500"
+                                  : "border-gray-300"
+                              }`}
+                            />
+                            <span className="text-sm text-gray-700">{opt}</span>
+                          </label>
+                        ))}
                     </div>
                   )}
                 </div>

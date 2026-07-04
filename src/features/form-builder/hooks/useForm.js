@@ -19,8 +19,8 @@ function useForm(formId) {
     queryKey: ["form", formId],
     queryFn: fetchForm,
     enabled: !!formId,
-    staleTime: 0,
-    refetchOnMount: "always",
+    staleTime: 5 * 60 * 1000,
+    refetchOnMount: false,
   });
 
   return { data, isLoading, isFetching, isFetched, error };
