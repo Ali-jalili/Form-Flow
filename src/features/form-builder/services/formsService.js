@@ -105,10 +105,23 @@ async function submitResponse(formId, answers) {
   const text = await response.text();
   return text ? JSON.parse(text) : {};
 }
+
+async function deleteForm(formId) {
+  const { data, error } = await supabase
+    .from("forms")
+    .delete()
+    .eq("id", formId)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export {
   createForm,
   saveFormFields,
   updateFormTitle,
   publishForm,
   submitResponse,
+  deleteForm,
 };
