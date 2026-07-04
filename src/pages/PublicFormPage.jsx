@@ -23,13 +23,10 @@ function PublicFormPage() {
 
   function validateAnswers() {
     for (const field of data.fields) {
-      // فقط فیلدهای required را بررسی کنید
-      if (field.required) {
-        const answer = answers[field.id];
-        if (!answer || (typeof answer === "string" && answer.trim() === "")) {
-          toast.error(`${field.label} is required`);
-          return false;
-        }
+      const answer = answers[field.id];
+      if (!answer || (typeof answer === "string" && answer.trim() === "")) {
+        toast.error(`${field.label} is required`);
+        return false;
       }
     }
     return true;
