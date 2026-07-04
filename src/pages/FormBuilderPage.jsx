@@ -179,9 +179,9 @@ function FormBuilderPage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium px-4 py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium p-2 sm:px-4 sm:py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save className="w-4 h-4" />
+              <Save className="w-5 h-5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">
                 {isSaving ? "Saving..." : "Save"}
               </span>
@@ -189,11 +189,11 @@ function FormBuilderPage() {
 
             {/* Publish */}
             <button
-              disabled={isPublishing || isDirty || fields.length === 0}
+              disabled={isPublishing || isDirty}
               onClick={handlePublish}
-              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold p-2 sm:px-4 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Globe className="w-4 h-4" />
+              <Globe className="w-5 h-5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">
                 {isPublishing ? "Publishing..." : "Publish"}
               </span>

@@ -40,7 +40,7 @@ function FormCard({ dataForm }) {
         </span>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 max-sm:opacity-100 transition-opacity duration-200">
           {/* Edit */}
           <Link
             to={`/builder/${dataForm.id}`}
