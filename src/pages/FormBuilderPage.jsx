@@ -136,16 +136,16 @@ function FormBuilderPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50/20">
       {/* Top Bar */}
       <header className="sticky top-0 z-20 bg-white/70 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2">
           {/* Left */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => window.history.back()}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all"
+              className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all flex-shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="h-5 w-px bg-gray-200" />
+            <div className="h-5 w-px bg-gray-200 hidden sm:block flex-shrink-0" />
             <input
               type="text"
               placeholder="Untitled Form"
@@ -156,21 +156,16 @@ function FormBuilderPage() {
                   payload: { title: e.target.value },
                 })
               }
-              className="text-lg font-semibold text-gray-900 border-none outline-none bg-transparent placeholder:text-gray-300 w-64 focus:ring-0"
+              className="text-base sm:text-lg font-semibold text-gray-900 border-none outline-none bg-transparent placeholder:text-gray-300 min-w-0 w-full focus:ring-0"
             />
-            {!title && (
-              <span className="text-xs text-gray-400 hidden sm:inline">
-                Click to add a title
-              </span>
-            )}
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Mobile Preview Toggle */}
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all"
+              className="lg:hidden p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all"
             >
               <Eye className="w-5 h-5" />
             </button>
@@ -179,10 +174,10 @@ function FormBuilderPage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium p-2 sm:px-4 sm:py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-medium w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">
+              <Save className="w-4 h-4" />
+              <span className="hidden sm:inline sm:ml-1.5">
                 {isSaving ? "Saving..." : "Save"}
               </span>
             </button>
@@ -191,10 +186,10 @@ function FormBuilderPage() {
             <button
               disabled={isPublishing || isDirty}
               onClick={handlePublish}
-              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold p-2 sm:px-4 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Globe className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline sm:ml-1.5">
                 {isPublishing ? "Publishing..." : "Publish"}
               </span>
             </button>

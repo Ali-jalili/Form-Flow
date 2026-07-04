@@ -27,7 +27,7 @@ function FormCard({ dataForm }) {
       </div>
 
       {/* Bottom */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         {/* Badge */}
         <span
           className={`text-xs font-medium px-2.5 py-1 rounded-full ${
@@ -39,15 +39,15 @@ function FormCard({ dataForm }) {
           {dataForm.is_published ? "Published" : "Draft"}
         </span>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 max-sm:opacity-100 transition-opacity duration-200">
+        {/* Actions — always visible */}
+        <div className="flex items-center gap-0.5">
           {/* Edit */}
           <Link
             to={`/builder/${dataForm.id}`}
-            className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
             title="Edit form"
           >
-            <Edit3 className="w-3.5 h-3.5" />
+            <Edit3 className="w-4 h-4" />
           </Link>
 
           {/* Responses */}
@@ -57,10 +57,10 @@ function FormCard({ dataForm }) {
                 e.preventDefault();
                 navigate(`/responses/${dataForm.id}`);
               }}
-              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+              className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
               title="View responses"
             >
-              <BarChart3 className="w-3.5 h-3.5" />
+              <BarChart3 className="w-4 h-4" />
             </button>
           )}
         </div>
