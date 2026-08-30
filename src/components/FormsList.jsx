@@ -1,14 +1,14 @@
 /** @format */
 
-import FormCard from "./FormCard";
-import useAuth from "../../Auth/useAuth";
+import useAuth from "../features/Auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createForm } from "../services/formsService";
-import Spinner from "../components/Spinner";
+import { createForm } from "../features/form-builder/services/formsService";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, FileText } from "lucide-react";
+import FormCard from "../features/form-builder/components/FormCard";
+import Spinner from "./ui/Spinner";
 
 function FormsList({ data }) {
   const { user } = useAuth();

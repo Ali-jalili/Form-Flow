@@ -1,21 +1,13 @@
 /** @format */
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DashboardPage from "../pages/DashboardPage";
-import FormBuilderPage from "../pages/FormBuilderPage";
-import PublicFormPage from "../pages/PublicFormPage";
-import ResponsesPage from "../pages/ResponsesPage";
-import LoginPage from "../pages/LoginPage";
-import SignupPage from "../pages/SignupPage";
-import { AuthProvider } from "../features/Auth/AuthContext";
+import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import ProtectedRoute from "../features/Auth/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import Header from "../components/Header";
-import HomePage from "../pages/HomePage";
 import Footer from "../components/Footer";
-import NotFoundPage from "../pages/NotFound";
+import AppRoutes from "./router/router";
+import { AuthProvider } from "../features/Auth/AuthContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,37 +27,7 @@ function App() {
           <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/builder/:formId"
-                  element={
-                    <ProtectedRoute>
-                      <FormBuilderPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/form/:publicId" element={<PublicFormPage />} />
-                <Route
-                  path="/responses/:formId"
-                  element={
-                    <ProtectedRoute>
-                      <ResponsesPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
+              <AppRoutes />
             </main>
             <Footer />
           </div>

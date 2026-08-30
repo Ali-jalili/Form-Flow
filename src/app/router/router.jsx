@@ -3,16 +3,16 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../../app/router/ProtectedRoute";
-import Spinner from "../components/ui/Spinner";
+import Spinner from "../../components/ui/Spinner";
 
-const HomePage = lazy(() => import("../pages/HomePage"));
-const DashboardPage = lazy(() => import("../pages/DashboardPage"));
-const FormBuilderPage = lazy(() => import("../pages/FormBuilderPage"));
-const PublicFormPage = lazy(() => import("../pages/PublicFormPage"));
-const ResponsesPage = lazy(() => import("../pages/ResponsesPage"));
-const LoginPage = lazy(() => import("../pages/LoginPage"));
-const SignupPage = lazy(() => import("../pages/SignupPage"));
-const NotFoundPage = lazy(() => import("../pages/NotFound"));
+const HomePage = lazy(() => import("../../pages/HomePage"));
+const DashboardPage = lazy(() => import("../../pages/DashboardPage"));
+const FormBuilderPage = lazy(() => import("../../pages/FormBuilderPage"));
+const PublicFormPage = lazy(() => import("../../pages/PublicFormPage"));
+const ResponsesPage = lazy(() => import("../../pages/ResponsesPage"));
+const LoginPage = lazy(() => import("../../pages/LoginPage"));
+const SignupPage = lazy(() => import("../../pages/SignupPage"));
+const NotFoundPage = lazy(() => import("../../pages/NotFound"));
 
 function AppRoutes() {
   return (
