@@ -1,11 +1,11 @@
 /** @format */
 
-import FormCard from "../../features/form-builder/components/FormCard";
-import useAuth from "../../features/Auth/useAuth";
+import FormCard from "./FormCard";
+import useAuth from "../../Auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createForm } from "../../features/form-builder/services/formsService";
+import { createForm } from "../services/formsService";
 import Spinner from "../components/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, FileText } from "lucide-react";

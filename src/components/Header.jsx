@@ -1,7 +1,7 @@
 /** @format */
 
 import { Link } from "react-router-dom";
-import useAuth from "../../features/Auth/useAuth";
+import useAuth from "../features/Auth/useAuth";
 import { Layout, LogOut, LayoutDashboard } from "lucide-react";
 
 function Header() {
