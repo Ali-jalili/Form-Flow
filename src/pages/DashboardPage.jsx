@@ -1,12 +1,11 @@
 /** @format */
 
-import useForms from "../features/form-builder/hooks/useForms";
+import useForms from "../features/form/hooks/useForms";
 import ErrorMessage from "../components/ui/ErrorMessage";
 
-import EmptyState from "../components/EmptyState";
-
 import Spinner from "../components/ui/Spinner";
-import FormsList from "../components/FormsList";
+import EmptyState from "../features/form/components/EmptyState";
+import FormsList from "../features/form/components/FormsList";
 
 function DashboardPage() {
   const { data, isLoading, error } = useForms();

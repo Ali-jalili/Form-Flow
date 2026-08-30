@@ -8,17 +8,17 @@ import { Save, Eye, ArrowLeft, Globe, Sparkles, Grip } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
-import formReducer from "../features/form-builder/utils/formReducer";
-import SortableField from "../features/form-builder/components/SortableField";
+import formReducer from "../features/form/utils/formReducer";
+import SortableField from "../features/form/components/SortableField";
 import {
   publishForm,
   saveFormFields,
   updateFormTitle,
-} from "../features/form-builder/services/formsService";
-import useFormFields from "../features/form-builder/hooks/useFormFields";
-import useForms from "../features/form-builder/hooks/useForms";
-import Spinner from "../ui/components/Spinner";
+} from "../features/form/services/formsService";
+import useForm from "../features/form/hooks/useForm";
+import useFormFields from "../features/form/hooks/useFormFields";
 import useAuth from "../features/Auth/useAuth";
+import Spinner from "../components/ui/Spinner";
 
 const initialState = { title: "", fields: [] };
 
@@ -28,12 +28,15 @@ function FormBuilderPage() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const { formId } = useParams();
-  const { data: formsList } = useForms();
+
+  const { data: formData, isLoading: formLoading } = useForm(formId);
+
   const {
     data: fieldsData,
     isLoading: fieldsLoading,
     isFetched: fieldsFetched,
   } = useFormFields(formId);
+
   const queryClient = useQueryClient();
 
   const draftKey = `form-draft-${formId}`;
@@ -43,9 +46,6 @@ function FormBuilderPage() {
   const { fields, title } = state;
   const [publishedUrl, setPublishedUrl] = useState(null);
 
-  const formData = formsList?.find((f) => f.id === formId);
-
-  // لود Draft از localStorage (اولین بار)
   useEffect(() => {
     if (!formId) return;
     const key = `form-draft-${formId}`;
@@ -59,7 +59,6 @@ function FormBuilderPage() {
     }
   }, [formId]);
 
-  // ذخیره خودکار Draft با Debounce 500ms
   const saveDraftTimer = useRef(null);
   useEffect(() => {
     if (!formId) return;
@@ -70,7 +69,6 @@ function FormBuilderPage() {
     return () => clearTimeout(saveDraftTimer.current);
   }, [state, formId, draftKey]);
 
-  // بارگذاری از سرور فقط اگر Draft نبود
   useEffect(() => {
     if (!formId || !fieldsFetched || !formData) return;
     const draft = localStorage.getItem(draftKey);
@@ -81,7 +79,6 @@ function FormBuilderPage() {
     }
   }, [formId, fieldsFetched, formData]);
 
-  // لینک عمومی
   useEffect(() => {
     if (formData?.public_id) {
       setPublishedUrl(`${window.location.origin}/form/${formData.public_id}`);
@@ -90,7 +87,6 @@ function FormBuilderPage() {
     }
   }, [formData?.public_id]);
 
-  // موقع خروج از Builder، کش داشبورد رو با Draft آپدیت کن
   useEffect(() => {
     return () => {
       const draft = localStorage.getItem(draftKey);
