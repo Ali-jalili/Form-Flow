@@ -2,7 +2,7 @@
 
 import { Navigate } from "react-router-dom";
 import Spinner from "../../ui/components/Spinner";
-import useAuth from "../features/Auth/useAuth";
+import useAuth from "../context/useAuth";
 
 function ProtectedRoute({ children }) {
   const { user, isLoading } = useAuth();
