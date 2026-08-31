@@ -40,13 +40,8 @@ function FormFieldsEditor() {
     move(oldIndex, newIndex);
   }
 
-  function handleDelete(index) {
-    remove(index);
-  }
-
   return (
-    <section className="flex flex-1 flex-col bg-white lg:border-r border-gray-100 min-w-0">
-      {/* Editor Header */}
+    <section className="flex min-w-0 flex-1 flex-col bg-white lg:border-r lg:border-gray-100">
       <div className="border-b border-gray-100 px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -65,7 +60,6 @@ function FormFieldsEditor() {
         </div>
       </div>
 
-      {/* Fields */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         {fields.length === 0 ? (
           <EmptyFieldsState />
@@ -85,7 +79,7 @@ function FormFieldsEditor() {
                       field={field}
                       index={index}
                       control={control}
-                      remove={handleDelete}
+                      remove={remove}
                     />
                   </div>
                 ))}
@@ -95,7 +89,6 @@ function FormFieldsEditor() {
         )}
       </div>
 
-      {/* Add Field */}
       <div className="sticky bottom-0 border-t border-gray-100 bg-white/90 p-4 backdrop-blur-md sm:p-5 lg:p-6">
         <div className="mx-auto max-w-3xl">
           <div className="mb-2 flex items-center gap-2 text-xs font-medium text-gray-500">
