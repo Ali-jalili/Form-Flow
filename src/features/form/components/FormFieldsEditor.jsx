@@ -84,13 +84,6 @@ function FormFieldsEditor() {
               <div className="mx-auto max-w-3xl space-y-4 pb-8">
                 {fields.map((field, index) => (
                   <div key={field.id} className="group relative">
-                    {/* Field number */}
-                    <div className="absolute -left-3 top-6 z-10 hidden -translate-x-full lg:block">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-[11px] font-semibold text-gray-400 shadow-sm transition-colors group-hover:border-indigo-200 group-hover:text-indigo-500">
-                        {index + 1}
-                      </div>
-                    </div>
-
                     <SortableField
                       field={field}
                       index={index}
