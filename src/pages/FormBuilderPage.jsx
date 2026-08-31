@@ -10,16 +10,13 @@ import useAuth from "../features/Auth/useAuth";
 import useFormFields from "../features/form/hooks/useFormFields";
 import useFormDraft from "../features/form/hooks/useFormDraft";
 import useFormData from "../features/form/hooks/useFormData";
-import {
-  publishForm,
-  saveFormFields,
-  updateFormTitle,
-} from "../features/form/services/formsService";
+import { publishForm } from "../features/form/services/formsService";
 
 import FormBuilderHeader from "../features/form/components/FormBuilderHeader";
 import PublishedFormBanner from "../features/form/components/PublishedFormBanner";
 import FormFieldsEditor from "../features/form/components/FormFieldsEditor";
 import FormPreview from "../features/form/components/FormPreview";
+import useSaveForm from "../features/form/hooks/useSaveForm";
 
 import Spinner from "../components/ui/Spinner";
 
@@ -34,7 +31,6 @@ function FormBuilderPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState(null);
@@ -68,7 +64,7 @@ function FormBuilderPage() {
     watch,
     !!formData && fieldsFetched,
   );
-  // Load initial form data.
+
   useEffect(() => {
     if (!formId || !fieldsFetched || !formData) return;
 
@@ -117,29 +113,13 @@ function FormBuilderPage() {
     };
   }, [getDraft, formData?.title, formId, queryClient, user]);
 
+  const { mutateAsync: saveForm, isPending: isSaving } = useSaveForm(formId);
+
   async function handleSave() {
     const values = getValues();
 
-    setIsSaving(true);
-
     try {
-      await saveFormFields(formId, values.fields);
-      await updateFormTitle(formId, values.title);
-
-      queryClient.setQueryData(["forms", user.id], (old) =>
-        old?.map((form) =>
-          form.id === formId
-            ? {
-                ...form,
-                title: values.title,
-              }
-            : form,
-        ),
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: ["forms", user.id],
-      });
+      await saveForm(values);
 
       reset(values);
       clearDraft();
@@ -147,8 +127,6 @@ function FormBuilderPage() {
       toast.success("Form saved successfully!");
     } catch {
       toast.error("Failed to save form. Please try again.");
-    } finally {
-      setIsSaving(false);
     }
   }
 
