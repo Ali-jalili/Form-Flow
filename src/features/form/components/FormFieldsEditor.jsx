@@ -22,7 +22,7 @@ function FormFieldsEditor() {
       type,
       label: "",
       required: false,
-      options: type === "multiple_choice" ? ["Option 1"] : [],
+      options: type === "multiple_choice" ? [""] : [],
       order: fields.length + 1,
     });
   }
