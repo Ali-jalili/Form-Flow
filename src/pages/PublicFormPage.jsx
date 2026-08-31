@@ -1,13 +1,14 @@
 /** @format */
 
 import { useParams } from "react-router-dom";
-import usePublicForm from "../features/form-builder/hooks/usePublicForm";
-import Spinner from "../ui/components/Spinner";
-import ErrorMessage from "../ui/components/ErrorMessage";
+import usePublicForm from "../features/form/hooks/usePublicForm";
+
 import { useState } from "react";
-import { submitResponse } from "../features/form-builder/services/formsService";
+import { submitResponse } from "../features/form/services/formsService";
 import toast from "react-hot-toast";
 import { Send, CheckCircle, Loader2 } from "lucide-react";
+import Spinner from "../components/ui/Spinner";
+import ErrorMessage from "../components/ui/ErrorMessage";
 
 function PublicFormPage() {
   const [answers, setAnswers] = useState({});

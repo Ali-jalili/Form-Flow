@@ -1,11 +1,10 @@
 /** @format */
 
 import { useParams, Link } from "react-router-dom";
-import useResponses from "../features/form-builder/hooks/useResponses";
-import Spinner from "../ui/components/Spinner";
-import ErrorMessage from "../ui/components/ErrorMessage";
-import useFormFields from "../features/form-builder/hooks/useFormFields";
-import useForms from "../features/form-builder/hooks/useForms";
+import useResponses from "../features/form/hooks/useResponses";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import useFormFields from "../features/form/hooks/useFormFields";
+import useForms from "../features/form/hooks/useForms";
 import {
   ArrowLeft,
   MessageSquare,
@@ -13,6 +12,7 @@ import {
   User,
   BarChart3,
 } from "lucide-react";
+import Spinner from "../components/ui/Spinner";
 
 function ResponsesPage() {
   const { formId } = useParams();
