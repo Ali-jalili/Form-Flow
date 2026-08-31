@@ -1,15 +1,7 @@
 /** @format */
 
 import { Link } from "react-router-dom";
-import {
-  Layout,
-  Zap,
-  BarChart3,
-  ArrowRight,
-  Sparkles,
-  Share2,
-  FileText,
-} from "lucide-react";
+import { Layout, BarChart3, ArrowRight, Sparkles, Share2 } from "lucide-react";
 
 function HomePage() {
   return (

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 
-function useFormDraft(formId, watch) {
+function useFormDraft(formId, watch, enabled = false) {
   const draftKey = useMemo(
     () => (formId ? `form-draft-${formId}` : null),
     [formId],
@@ -25,14 +25,14 @@ function useFormDraft(formId, watch) {
   const formValues = watch();
 
   useEffect(() => {
-    if (!draftKey) return;
+    if (!draftKey || !enabled) return;
 
     const timer = setTimeout(() => {
       localStorage.setItem(draftKey, JSON.stringify(formValues));
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [draftKey, formValues]);
+  }, [draftKey, formValues, enabled]);
 
   const clearDraft = useCallback(() => {
     if (!draftKey) return;

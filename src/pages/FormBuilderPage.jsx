@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import useAuth from "../features/Auth/useAuth";
 import useFormFields from "../features/form/hooks/useFormFields";
 import useFormDraft from "../features/form/hooks/useFormDraft";
-
+import useFormData from "../features/form/hooks/useForm";
 import {
   publishForm,
   saveFormFields,
@@ -55,22 +55,28 @@ function FormBuilderPage() {
   const title = watch("title");
   const fields = watch("fields");
 
-  const { data: formData, isLoading: formLoading } = useForm(formId);
-
+  const { data: formData, isLoading: formLoading } = useFormData(formId);
   const {
     data: fieldsData,
     isLoading: fieldsLoading,
     isFetched: fieldsFetched,
   } = useFormFields(formId);
 
-  const { clearDraft, getDraft } = useFormDraft(formId, watch);
+  const { clearDraft, getDraft } = useFormDraft(
+    formId,
+    watch,
+    !!formData && fieldsFetched,
+  );
   // Load initial form data.
   useEffect(() => {
     if (!formId || !fieldsFetched || !formData) return;
 
     const draft = getDraft();
 
-    if (draft) return;
+    if (draft) {
+      reset(draft);
+      return;
+    }
 
     reset({
       title: formData.title || "",

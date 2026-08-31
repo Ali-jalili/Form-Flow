@@ -75,7 +75,6 @@ function FormFieldsEditor() {
               <div className="mx-auto max-w-3xl space-y-3 pb-6">
                 {fields.map((field, index) => (
                   <div key={field.id} className="relative">
-                    {/* Field Number */}
                     <div className="absolute -left-3 top-5 z-10 hidden -translate-x-full sm:block">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[11px] font-semibold text-gray-400">
                         {index + 1}
@@ -85,7 +84,8 @@ function FormFieldsEditor() {
                     <SortableField
                       field={field}
                       index={index}
-                      onDelete={handleDelete}
+                      control={control}
+                      remove={handleDelete}
                     />
                   </div>
                 ))}
