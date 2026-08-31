@@ -1,29 +1,24 @@
 /** @format */
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabaseClient";
+import { getForm } from "../services/formsService";
 
-function useForm(formId) {
-  async function fetchForm() {
-    const { data, error } = await supabase
-      .from("forms")
-      .select("*")
-      .eq("id", formId)
-      .single();
-
-    if (error) throw new Error(error.message);
-    return data;
-  }
-
+function useFormData(formId) {
   const { data, isLoading, isFetching, isFetched, error } = useQuery({
     queryKey: ["form", formId],
-    queryFn: fetchForm,
+    queryFn: () => getForm(formId),
     enabled: !!formId,
     staleTime: 5 * 60 * 1000,
     refetchOnMount: false,
   });
 
-  return { data, isLoading, isFetching, isFetched, error };
+  return {
+    data,
+    isLoading,
+    isFetching,
+    isFetched,
+    error,
+  };
 }
 
-export default useForm;
+export default useFormData;

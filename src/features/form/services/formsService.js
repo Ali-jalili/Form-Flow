@@ -58,6 +58,18 @@ async function getFormsByUser(userId) {
   return data;
 }
 
+async function getForm(formId) {
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*")
+    .eq("id", formId)
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
 async function updateFormTitle(formId, title) {
   const { error } = await supabase
     .from("forms")
@@ -108,6 +120,7 @@ export {
   createForm,
   saveFormFields,
   getFormsByUser,
+  getForm,
   updateFormTitle,
   publishForm,
   submitResponse,

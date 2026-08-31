@@ -1,37 +1,22 @@
 /** @format */
 
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, FilePlus, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
-import useAuth from "../../Auth/useAuth";
-import { createForm } from "../services/formsService";
+
+import useCreateForm from "../hooks/useCreateForm";
 
 function EmptyState() {
-  const { user } = useAuth();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const [isLoading, setIsLoading] = useState(false);
+  const { mutateAsync: createForm, isPending } = useCreateForm();
 
   async function handleCreateForm() {
-    if (!user) return;
-
-    setIsLoading(true);
-
     try {
-      const newForm = await createForm(user.id);
-
-      queryClient.invalidateQueries({
-        queryKey: ["forms", user.id],
-      });
+      const newForm = await createForm();
 
       navigate(`/builder/${newForm.id}`);
     } catch (error) {
       toast.error(error.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -83,11 +68,11 @@ function EmptyState() {
         <div className="mt-8">
           <button
             type="button"
-            disabled={isLoading}
+            disabled={isPending}
             onClick={handleCreateForm}
             className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
           >
-            {isLoading ? (
+            {isPending ? (
               <>
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                 Creating form...
