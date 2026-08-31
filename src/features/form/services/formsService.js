@@ -2,7 +2,6 @@
 
 import { supabase } from "../../../lib/supabaseClient";
 
-/** @format */
 async function createForm(userId) {
   const { data, error } = await supabase
     .from("forms")
@@ -45,6 +44,17 @@ async function saveFormFields(formId, fields) {
     .select();
 
   if (error) throw new Error(error.message);
+  return data;
+}
+
+async function getFormsByUser(userId) {
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) throw new Error(error.message);
+
   return data;
 }
 
@@ -97,6 +107,7 @@ async function deleteForm(formId) {
 export {
   createForm,
   saveFormFields,
+  getFormsByUser,
   updateFormTitle,
   publishForm,
   submitResponse,
