@@ -10,13 +10,13 @@ import useAuth from "../features/Auth/useAuth";
 import useFormFields from "../features/form/hooks/useFormFields";
 import useFormDraft from "../features/form/hooks/useFormDraft";
 import useFormData from "../features/form/hooks/useFormData";
-import { publishForm } from "../features/form/services/formsService";
 
 import FormBuilderHeader from "../features/form/components/FormBuilderHeader";
 import PublishedFormBanner from "../features/form/components/PublishedFormBanner";
 import FormFieldsEditor from "../features/form/components/FormFieldsEditor";
 import FormPreview from "../features/form/components/FormPreview";
 import useSaveForm from "../features/form/hooks/useSaveForm";
+import usePublishForm from "../features/form/hooks/usePublishForm";
 
 import Spinner from "../components/ui/Spinner";
 
@@ -30,8 +30,6 @@ function FormBuilderPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState(null);
 
@@ -130,6 +128,9 @@ function FormBuilderPage() {
     }
   }
 
+  const { mutateAsync: publish, isPending: isPublishing } =
+    usePublishForm(formId);
+
   async function handlePublish() {
     const values = getValues();
 
@@ -143,22 +144,8 @@ function FormBuilderPage() {
       return;
     }
 
-    setIsPublishing(true);
-
     try {
-      const publicId = await publishForm(formId);
-
-      queryClient.setQueryData(["forms", user.id], (old) =>
-        old?.map((form) =>
-          form.id === formId
-            ? {
-                ...form,
-                is_published: true,
-                public_id: publicId,
-              }
-            : form,
-        ),
-      );
+      const publicId = await publish();
 
       clearDraft();
 
@@ -167,8 +154,6 @@ function FormBuilderPage() {
       toast.success("Form published successfully!");
     } catch {
       toast.error("Failed to publish form.");
-    } finally {
-      setIsPublishing(false);
     }
   }
 
