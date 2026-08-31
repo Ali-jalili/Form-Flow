@@ -2,7 +2,7 @@
 
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { Grip, Plus, Sparkles } from "lucide-react";
+import { FileText, Grip, Plus, Sparkles, WandSparkles } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import SortableField from "./SortableField";
@@ -33,6 +33,7 @@ function FormFieldsEditor() {
     if (!over || active.id === over.id) return;
 
     const oldIndex = fields.findIndex((field) => field.id === active.id);
+
     const newIndex = fields.findIndex((field) => field.id === over.id);
 
     if (oldIndex === -1 || newIndex === -1) return;
@@ -41,38 +42,53 @@ function FormFieldsEditor() {
   }
 
   return (
-    <section className="flex min-w-0 flex-1 flex-col bg-white lg:border-r lg:border-gray-100">
-      <div className="border-b border-gray-100 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-sm font-semibold text-gray-900">Form fields</h2>
+    <section className="flex min-w-0 flex-1 flex-col bg-gradient-to-b from-gray-50/80 via-white to-white lg:border-r lg:border-gray-100">
+      {/* Header */}
+      <div className="sticky top-0 z-10 border-b border-gray-100 bg-white/85 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+              <WandSparkles className="h-4 w-4" />
+            </div>
 
-            <p className="mt-0.5 text-xs text-gray-400">
-              Build and organize your form
-            </p>
+            <div className="min-w-0">
+              <h2 className="text-sm font-semibold text-gray-900">
+                Build your form
+              </h2>
+
+              <p className="mt-0.5 text-xs text-gray-400">
+                Add, edit and organize your fields
+              </p>
+            </div>
           </div>
 
           {fields.length > 0 && (
-            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
-              {fields.length} {fields.length === 1 ? "field" : "fields"}
-            </span>
+            <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 shadow-sm">
+              <FileText className="h-3.5 w-3.5 text-indigo-500" />
+
+              <span>
+                {fields.length} {fields.length === 1 ? "field" : "fields"}
+              </span>
+            </div>
           )}
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+      {/* Fields */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
         {fields.length === 0 ? (
           <EmptyFieldsState />
         ) : (
           <DndContext onDragEnd={handleDragEnd}>
             <SortableContext items={fields.map((field) => field.id)}>
-              <div className="mx-auto max-w-3xl space-y-3 pb-6">
+              <div className="mx-auto max-w-3xl space-y-4 pb-8">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="relative">
-                    <div className="absolute -left-3 top-5 z-10 hidden -translate-x-full sm:block">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[11px] font-semibold text-gray-400">
+                  <div key={field.id} className="group relative">
+                    {/* Field number */}
+                    <div className="absolute -left-3 top-6 z-10 hidden -translate-x-full lg:block">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-[11px] font-semibold text-gray-400 shadow-sm transition-colors group-hover:border-indigo-200 group-hover:text-indigo-500">
                         {index + 1}
-                      </span>
+                      </div>
                     </div>
 
                     <SortableField
@@ -89,11 +105,22 @@ function FormFieldsEditor() {
         )}
       </div>
 
-      <div className="sticky bottom-0 border-t border-gray-100 bg-white/90 p-4 backdrop-blur-md sm:p-5 lg:p-6">
+      {/* Add Field */}
+      <div className="sticky bottom-0 z-10 border-t border-gray-100 bg-white/90 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-2 flex items-center gap-2 text-xs font-medium text-gray-500">
-            <Plus className="h-3.5 w-3.5" />
-            Add a field
+          <div className="mb-2.5 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-600">
+              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-indigo-50 text-indigo-600">
+                <Plus className="h-3 w-3" />
+              </div>
+              Add a field
+            </div>
+
+            {fields.length > 0 && (
+              <span className="hidden text-[11px] text-gray-400 sm:block">
+                Drag fields to reorder
+              </span>
+            )}
           </div>
 
           <AddFieldSelect onAddField={addField} />
@@ -105,24 +132,42 @@ function FormFieldsEditor() {
 
 function EmptyFieldsState() {
   return (
-    <div className="flex min-h-[55vh] items-center justify-center">
-      <div className="w-full max-w-sm text-center">
-        <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
-          <Sparkles className="h-9 w-9 text-indigo-500" />
+    <div className="flex min-h-[55vh] items-center justify-center px-4">
+      <div className="w-full max-w-md text-center">
+        {/* Illustration */}
+        <div className="relative mx-auto mb-7 flex h-24 w-24 items-center justify-center">
+          <div className="absolute inset-0 rounded-3xl bg-indigo-100/50 blur-xl" />
+
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-purple-50 shadow-sm">
+            <Sparkles className="h-8 w-8 text-indigo-500" />
+
+            <div className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border-4 border-white bg-indigo-600 shadow-sm">
+              <Plus className="h-3.5 w-3.5 text-white" />
+            </div>
+          </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-gray-900">
-          Start building your form
-        </h3>
+        {/* Copy */}
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
+            <Sparkles className="h-3 w-3" />
+            Let&apos;s get started
+          </span>
 
-        <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-gray-500">
-          Add your first field using the button below. You can reorder fields
-          anytime by dragging them.
-        </p>
+          <h3 className="mt-4 text-xl font-bold tracking-tight text-gray-900">
+            Your form is empty
+          </h3>
 
-        <div className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-400">
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-gray-500">
+            Start by adding your first question. You can customize it and
+            rearrange your fields anytime.
+          </p>
+        </div>
+
+        {/* Hint */}
+        <div className="mx-auto mt-7 flex w-fit items-center gap-2 rounded-xl border border-gray-100 bg-white px-4 py-2.5 text-xs text-gray-400 shadow-sm">
           <Grip className="h-3.5 w-3.5" />
-          Drag to reorder fields
+          <span>Add multiple fields and drag to reorder</span>
         </div>
       </div>
     </div>
