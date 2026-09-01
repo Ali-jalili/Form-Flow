@@ -13,7 +13,6 @@ function DashboardPage() {
   const { data, isLoading, error } = useForms();
   const { user } = useAuth();
 
-  // Lazy Initial State: این تابع فقط یک‌بار هنگام Mount شدن اجرا می‌شود و در رندرهای بعدی فراخوانی نمی‌شود
   const [isNewUser] = useState(() => {
     if (!user?.created_at) return false;
     const createdAt = new Date(user.created_at).getTime();

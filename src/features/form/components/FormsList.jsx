@@ -35,7 +35,6 @@ function FormsList({ data }) {
     }
   }
 
-  // فیلتر و سرچ فرم‌ها
   const filteredData = data.filter((form) => {
     const matchesSearch = (form.title || "Untitled Form")
       .toLowerCase()
