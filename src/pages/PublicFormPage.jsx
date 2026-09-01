@@ -50,7 +50,6 @@ function PublicFormPage() {
       return false;
     }
 
-    // 1. Required fields
     for (const field of data.fields) {
       if (!field.required) continue;
 
@@ -62,7 +61,6 @@ function PublicFormPage() {
       }
     }
 
-    // 2. At least one answer
     const hasAnyAnswer = Object.values(answers).some((answer) => {
       if (typeof answer === "string") {
         return answer.trim() !== "";
@@ -191,7 +189,7 @@ function PublicFormPage() {
         <div className="overflow-hidden rounded-3xl border border-gray-200/70 bg-white shadow-xl shadow-gray-200/40">
           <div className="p-5 sm:p-8">
             <div className="space-y-8">
-              {fields.map((field, index) => {
+              {fields.map((field) => {
                 const answer = answers[field.id] || "";
 
                 return (
@@ -199,32 +197,26 @@ function PublicFormPage() {
                     key={field.id}
                     className="relative rounded-2xl border border-gray-100 bg-gray-50/40 p-4 sm:p-5"
                   >
-                    {/* Question header */}
-                    <div className="mb-4 flex gap-3">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-xs font-semibold text-gray-400 shadow-sm ring-1 ring-gray-100">
-                        {index + 1}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <label className="block text-sm font-semibold leading-6 text-gray-800">
-                          {field.label || "Untitled Field"}
-
-                          {field.required && (
-                            <span
-                              className="ml-1.5 text-rose-500"
-                              aria-label="required"
-                            >
-                              *
-                            </span>
-                          )}
-                        </label>
+                    {/* Question */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-semibold leading-6 text-gray-800">
+                        {field.label || "Untitled Field"}
 
                         {field.required && (
-                          <span className="mt-0.5 block text-xs text-gray-400">
-                            Required
+                          <span
+                            className="ml-1.5 text-rose-500"
+                            aria-label="required"
+                          >
+                            *
                           </span>
                         )}
-                      </div>
+                      </label>
+
+                      {field.required && (
+                        <span className="mt-0.5 block text-xs text-gray-400">
+                          Required
+                        </span>
+                      )}
                     </div>
 
                     {/* Short text */}
@@ -275,10 +267,21 @@ function PublicFormPage() {
                                 type="button"
                                 disabled={isSubmitting}
                                 onClick={() =>
-                                  setAnswers((current) => ({
-                                    ...current,
-                                    [field.id]: opt,
-                                  }))
+                                  setAnswers((current) => {
+                                    const currentAnswer = current[field.id];
+
+                                    if (currentAnswer === opt) {
+                                      const next = { ...current };
+                                      delete next[field.id];
+
+                                      return next;
+                                    }
+
+                                    return {
+                                      ...current,
+                                      [field.id]: opt,
+                                    };
+                                  })
                                 }
                                 className={`flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-all duration-200 ${
                                   selected
