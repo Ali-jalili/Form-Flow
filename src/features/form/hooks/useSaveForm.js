@@ -31,6 +31,12 @@ function useSaveForm(formId) {
       queryClient.invalidateQueries({
         queryKey: ["forms", user.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["form", formId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["form_fields", formId],
+      });
     },
   });
 }

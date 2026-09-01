@@ -1,22 +1,22 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import useAuth from "../features/Auth/useAuth";
+import useFormData from "../features/form/hooks/useFormData";
 import useFormFields from "../features/form/hooks/useFormFields";
 import useFormDraft from "../features/form/hooks/useFormDraft";
-import useFormData from "../features/form/hooks/useFormData";
+import useSaveForm from "../features/form/hooks/useSaveForm";
+import usePublishForm from "../features/form/hooks/usePublishForm";
 
 import FormBuilderHeader from "../features/form/components/FormBuilderHeader";
 import PublishedFormBanner from "../features/form/components/PublishedFormBanner";
 import FormFieldsEditor from "../features/form/components/FormFieldsEditor";
 import FormPreview from "../features/form/components/FormPreview";
-import useSaveForm from "../features/form/hooks/useSaveForm";
-import usePublishForm from "../features/form/hooks/usePublishForm";
 
 import Spinner from "../components/ui/Spinner";
 
@@ -25,13 +25,45 @@ const DEFAULT_FORM_VALUES = {
   fields: [],
 };
 
+function isDraftDifferentFromServer(draft, serverValues) {
+  if (!draft) return false;
+
+  const normalize = (val) => JSON.stringify(val || {});
+
+  const draftNormalized = {
+    title: (draft.title || "").trim(),
+    fields: (draft.fields || []).map((f) => ({
+      id: f.id,
+      type: f.type,
+      label: f.label,
+      required: !!f.required,
+      options: f.options || [],
+    })),
+  };
+
+  const serverNormalized = {
+    title: (serverValues.title || "").trim(),
+    fields: (serverValues.fields || []).map((f) => ({
+      id: f.id,
+      type: f.type,
+      label: f.label,
+      required: !!f.required,
+      options: f.options || [],
+    })),
+  };
+
+  return normalize(draftNormalized) !== normalize(serverNormalized);
+}
+
 function FormBuilderPage() {
   const { formId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const [showPreview, setShowPreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState(null);
+  const [isDraftActive, setIsDraftActive] = useState(false);
 
   const formMethods = useForm({
     defaultValues: DEFAULT_FORM_VALUES,
@@ -63,23 +95,44 @@ function FormBuilderPage() {
     !!formData && fieldsFetched,
   );
 
+  const isFormSavedInDb = useMemo(() => {
+    return (
+      !!formData &&
+      (formData.title !== "Untitled Form" ||
+        (fieldsData && fieldsData.length > 0))
+    );
+  }, [formData, fieldsData]);
+
   useEffect(() => {
     if (!formId || !fieldsFetched || !formData) return;
 
-    const draft = getDraft();
-
-    if (draft) {
-      reset(draft);
-      return;
-    }
-
-    reset({
+    const serverValues = {
       title: formData.title || "",
       fields: fieldsData || [],
-    });
-  }, [formId, fieldsFetched, formData, fieldsData, getDraft, reset]);
+    };
 
-  // Build published form URL.
+    const draft = getDraft();
+
+    const hasRealUnsavedDraft = isDraftDifferentFromServer(draft, serverValues);
+
+    if (hasRealUnsavedDraft) {
+      reset(draft);
+      setIsDraftActive(true);
+    } else {
+      clearDraft();
+      reset(serverValues);
+      setIsDraftActive(false);
+    }
+  }, [
+    formId,
+    fieldsFetched,
+    formData,
+    fieldsData,
+    getDraft,
+    reset,
+    clearDraft,
+  ]);
+
   useEffect(() => {
     if (!formData?.public_id) {
       setPublishedUrl(null);
@@ -89,7 +142,6 @@ function FormBuilderPage() {
     setPublishedUrl(`${window.location.origin}/form/${formData.public_id}`);
   }, [formData?.public_id]);
 
-  // Keep the forms list cache in sync with an unsaved draft.
   useEffect(() => {
     return () => {
       const draft = getDraft();
@@ -113,14 +165,18 @@ function FormBuilderPage() {
 
   const { mutateAsync: saveForm, isPending: isSaving } = useSaveForm(formId);
 
+  const hasUnsavedChanges = isDirty || isDraftActive;
+  const showUnsaved = !isFormSavedInDb || hasUnsavedChanges;
+
   async function handleSave() {
     const values = getValues();
 
     try {
       await saveForm(values);
 
-      reset(values);
       clearDraft();
+      setIsDraftActive(false);
+      reset(values);
 
       toast.success("Form saved successfully!");
     } catch {
@@ -139,7 +195,7 @@ function FormBuilderPage() {
       return;
     }
 
-    if (isDirty) {
+    if (hasUnsavedChanges) {
       toast.error("Save your form before publishing.");
       return;
     }
@@ -148,6 +204,7 @@ function FormBuilderPage() {
       const publicId = await publish();
 
       clearDraft();
+      setIsDraftActive(false);
 
       setPublishedUrl(`${window.location.origin}/form/${publicId}`);
 
@@ -157,11 +214,12 @@ function FormBuilderPage() {
     }
   }
 
-  const canPublish = !isDirty && !isPublishing && fields.length > 0;
+  const canPublish =
+    fields.length > 0 && !hasUnsavedChanges && isFormSavedInDb && !isPublishing;
 
   if ((fieldsLoading || formLoading) && formId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30">
         <Spinner />
       </div>
     );
@@ -183,7 +241,7 @@ function FormBuilderPage() {
           onPublish={handlePublish}
           isSaving={isSaving}
           isPublishing={isPublishing}
-          isDirty={isDirty}
+          isDirty={showUnsaved}
           canPublish={canPublish}
         />
 
@@ -192,12 +250,22 @@ function FormBuilderPage() {
           onDismiss={() => setPublishedUrl(null)}
         />
 
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row h-[calc(100vh-3.5rem)]">
-          <div className={`${showPreview ? "hidden lg:flex" : "flex"} flex-1`}>
+        <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-7xl flex-col lg:flex-row">
+          {/* Form Builder */}
+          <div
+            className={`${
+              showPreview ? "hidden lg:flex" : "flex"
+            } min-w-0 flex-1`}
+          >
             <FormFieldsEditor />
           </div>
 
-          <div className={`${showPreview ? "flex" : "hidden lg:flex"} flex-1`}>
+          {/* Live Preview */}
+          <div
+            className={`${
+              showPreview ? "flex" : "hidden lg:flex"
+            } min-w-0 flex-1`}
+          >
             <FormPreview />
           </div>
         </div>
