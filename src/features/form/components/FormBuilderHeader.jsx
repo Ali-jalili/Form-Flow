@@ -50,7 +50,7 @@ function FormBuilderHeader({
                 className="min-w-0 w-full max-w-xs truncate rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-semibold text-gray-900 outline-none transition-all duration-200 placeholder:text-gray-400 hover:border-gray-200 hover:bg-white focus:border-indigo-200 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 sm:max-w-sm sm:text-base"
               />
 
-              <div className="hidden shrink-0 items-center gap-1.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium sm:flex">
+              <div className="flex shrink-0 items-center gap-1.5 rounded-md bg-gray-50 px-1.5 py-1 text-[10px] font-medium sm:px-2 sm:text-xs">
                 {isDirty ? (
                   <>
                     <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -58,7 +58,7 @@ function FormBuilderHeader({
                   </>
                 ) : (
                   <>
-                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                    <Check className="h-3 w-3 text-emerald-600 sm:h-3.5 sm:w-3.5" />
                     <span className="text-emerald-700">Saved</span>
                   </>
                 )}
