@@ -24,6 +24,16 @@ function usePublishForm(formId) {
         ),
       );
 
+      queryClient.setQueryData(["form", formId], (old) =>
+        old
+          ? {
+              ...old,
+              is_published: true,
+              public_id: publicId,
+            }
+          : old,
+      );
+
       queryClient.invalidateQueries({
         queryKey: ["forms", user.id],
       });
