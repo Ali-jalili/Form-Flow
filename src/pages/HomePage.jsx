@@ -13,7 +13,7 @@ import {
   Send,
   Share2,
   Sparkles,
-  Star,
+  Zap,
 } from "lucide-react";
 
 function HomePage() {
@@ -23,21 +23,24 @@ function HomePage() {
       title: "Drag & Drop Builder",
       description:
         "Build polished forms quickly with flexible fields and an intuitive editor.",
-      iconClass: "bg-indigo-50 text-indigo-600",
+      iconClass:
+        "bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white",
     },
     {
       icon: Share2,
       title: "Instant Sharing",
       description:
         "Publish your form in one click and share it with a simple public link.",
-      iconClass: "bg-purple-50 text-purple-600",
+      iconClass:
+        "bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white",
     },
     {
       icon: BarChart3,
       title: "Smart Analytics",
       description:
         "Turn submitted responses into clear insights and useful visual reports.",
-      iconClass: "bg-emerald-50 text-emerald-600",
+      iconClass:
+        "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white",
     },
   ];
 
@@ -63,54 +66,57 @@ function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen overflow-hidden bg-white text-gray-900">
+    <div className="min-h-screen overflow-hidden bg-white text-gray-900 selection:bg-indigo-500 selection:text-white">
       {/* =========================================================
-          HERO
+          HERO SECTION
       ========================================================= */}
-      <section className="relative px-4 pb-20 pt-20 sm:px-6 sm:pb-24 sm:pt-28 lg:px-8 lg:pt-32">
-        {/* Background decoration */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-[-180px] h-[520px] w-[760px] -translate-x-1/2 rounded-full bg-indigo-100/50 blur-3xl" />
-          <div className="absolute left-[-180px] top-[320px] h-80 w-80 rounded-full bg-purple-100/30 blur-3xl" />
-          <div className="absolute right-[-180px] top-[420px] h-80 w-80 rounded-full bg-blue-100/30 blur-3xl" />
+      <section className="relative px-4 pb-20 pt-20 sm:px-6 sm:pb-28 sm:pt-28 lg:px-8 lg:pt-32">
+        {/* Background Ambient Glow & Grid Pattern */}
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-60" />
+          <div className="absolute left-1/2 top-[-100px] h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-indigo-200/60 to-purple-200/60 blur-3xl" />
+          <div className="absolute left-[-100px] top-[300px] h-72 w-72 rounded-full bg-purple-200/40 blur-3xl" />
+          <div className="absolute right-[-100px] top-[200px] h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
         </div>
 
         <div className="mx-auto max-w-7xl">
-          {/* Hero copy */}
+          {/* Hero Copy */}
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700">
-              <Sparkles className="h-4 w-4" />
-              Now in Public Beta
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 px-4 py-1.5 text-xs font-semibold text-indigo-700 backdrop-blur-md transition-all hover:scale-105">
+              <Sparkles className="h-3.5 w-3.5 animate-pulse text-indigo-600" />
+              <span>Now in Public Beta</span>
+              <span className="h-1 w-1 rounded-full bg-indigo-400" />
+              <span className="text-indigo-500 font-normal">v1.0</span>
             </div>
 
-            <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-gray-950 sm:text-5xl lg:text-7xl">
+            <h1 className="text-4xl font-black leading-[1.08] tracking-tight text-gray-950 sm:text-6xl lg:text-7xl">
               Forms that{" "}
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient">
                 work for you
               </span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-gray-500 sm:text-lg sm:leading-8">
-              Create beautiful forms in minutes, share them instantly, and turn
-              responses into useful insights.
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg sm:leading-8">
+              Create intuitive forms in minutes, share them instantly, and
+              transform raw submissions into actionable insight.
             </p>
 
-            {/* Main CTA */}
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            {/* CTA Group */}
+            <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 to="/signup"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 sm:w-auto"
+                className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-indigo-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-indigo-500/35 active:translate-y-0 sm:w-auto"
               >
-                Get Started Free
+                <span>Get Started Free</span>
                 <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
 
               <a
                 href="#how-it-works"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200/80 bg-white/80 px-7 py-4 text-base font-medium text-gray-700 backdrop-blur-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50/80 hover:text-gray-900 sm:w-auto"
               >
                 See how it works
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4 text-gray-400" />
               </a>
             </div>
           </div>
@@ -119,321 +125,198 @@ function HomePage() {
               PRODUCT PREVIEW
           ===================================================== */}
           <div className="relative mx-auto mt-16 max-w-6xl sm:mt-20">
-            {/* Floating response badge */}
-            <div className="absolute -bottom-5 left-4 z-20 hidden items-center gap-2 rounded-xl border border-gray-100 bg-white px-4 py-2.5 shadow-xl shadow-gray-200/70 sm:flex lg:-left-5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            {/* Floating Card 1: Status */}
+            <div className="absolute -bottom-6 left-4 z-20 hidden items-center gap-3 rounded-2xl border border-white/60 bg-white/80 p-3.5 shadow-2xl shadow-indigo-900/10 backdrop-blur-md sm:flex lg:-left-6">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100/80 text-emerald-600">
+                <CheckCircle2 className="h-5 w-5" />
               </div>
-
-              <div className="text-left">
-                <p className="text-[10px] font-medium text-gray-400">STATUS</p>
-                <p className="text-xs font-semibold text-gray-700">
+              <div className="text-left pr-2">
+                <p className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                  Status
+                </p>
+                <p className="text-xs font-bold text-gray-800">
                   Collecting responses
                 </p>
               </div>
             </div>
 
-            {/* Floating analytics badge */}
-            <div className="absolute -right-5 -top-5 z-20 hidden rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl shadow-gray-200/70 lg:block">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50">
-                  <BarChart3 className="h-4 w-4 text-indigo-600" />
+            {/* Floating Card 2: Analytics */}
+            <div className="absolute -right-6 -top-6 z-20 hidden rounded-2xl border border-white/60 bg-white/80 p-4 shadow-2xl shadow-indigo-900/10 backdrop-blur-md lg:block">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100/80 text-indigo-600">
+                  <BarChart3 className="h-5 w-5" />
                 </div>
-
-                <div>
-                  <p className="text-[10px] font-medium text-gray-400">
-                    RESPONSES
+                <div className="text-left pr-2">
+                  <p className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                    Live Submissions
                   </p>
-                  <p className="text-sm font-bold text-gray-800">1,248</p>
+                  <p className="text-base font-extrabold text-gray-900">
+                    1,248
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Browser frame */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-1.5 shadow-2xl shadow-indigo-100/70 sm:rounded-3xl sm:p-2">
-              {/* Browser chrome */}
-              <div className="flex h-11 items-center gap-1.5 rounded-t-xl bg-gray-50 px-3 sm:h-12 sm:px-4">
-                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+            {/* Main Mockup Frame */}
+            <div className="relative rounded-2xl border border-gray-200/80 bg-white/50 p-2 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl sm:rounded-3xl sm:p-3">
+              {/* Browser Header */}
+              <div className="flex h-11 items-center gap-2 rounded-t-xl bg-gray-100/80 px-4 sm:h-12">
+                <div className="flex gap-1.5">
+                  <span className="h-3 w-3 rounded-full bg-rose-400/80" />
+                  <span className="h-3 w-3 rounded-full bg-amber-400/80" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
+                </div>
 
-                <div className="ml-3 flex h-7 flex-1 items-center rounded-lg border border-gray-100 bg-white px-3 sm:ml-5">
-                  <span className="truncate text-[9px] text-gray-400 sm:text-[10px]">
-                    app.formflow.com/builder/customer-feedback
+                <div className="ml-4 flex h-7 flex-1 items-center rounded-md border border-gray-200/60 bg-white px-3 max-w-sm">
+                  <span className="truncate text-[11px] font-medium text-gray-500">
+                    https://app.formflow.com/builder/customer-feedback
                   </span>
                 </div>
               </div>
 
-              {/* Application */}
-              <div className="overflow-hidden rounded-b-xl border-t border-gray-100 bg-gray-50 sm:rounded-b-2xl">
-                <div className="flex min-h-[390px] sm:min-h-[480px]">
+              {/* App Workspace */}
+              <div className="overflow-hidden rounded-b-xl border-t border-gray-200/60 bg-gray-50/50 sm:rounded-b-2xl">
+                <div className="flex min-h-[420px] sm:min-h-[500px]">
                   {/* Sidebar */}
-                  <aside className="hidden w-48 shrink-0 border-r border-gray-100 bg-white p-5 md:block">
+                  <aside className="hidden w-52 shrink-0 border-r border-gray-200/60 bg-white p-5 md:block">
                     <div className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100">
-                        <Layout className="h-4 w-4 text-indigo-600" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-md shadow-indigo-200">
+                        <Zap className="h-4 w-4" />
                       </div>
-
-                      <span className="text-sm font-bold text-gray-800">
+                      <span className="text-sm font-extrabold text-gray-900">
                         FormFlow
                       </span>
                     </div>
 
                     <div className="mt-8">
-                      <p className="mb-3 px-2 text-[9px] font-semibold uppercase tracking-wider text-gray-400">
+                      <p className="mb-2.5 px-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                         Workspace
                       </p>
-
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs font-medium text-indigo-600">
-                          <Layout className="h-3.5 w-3.5" />
-                          My Forms
+                        <div className="flex items-center gap-2.5 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-600">
+                          <Layout className="h-4 w-4" /> My Forms
                         </div>
-
-                        <div className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs text-gray-400">
-                          <MessageSquareText className="h-3.5 w-3.5" />
-                          Responses
+                        <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">
+                          <MessageSquareText className="h-4 w-4" /> Responses
                         </div>
-
-                        <div className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs text-gray-400">
-                          <BarChart3 className="h-3.5 w-3.5" />
-                          Analytics
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 border-t border-gray-100 pt-6">
-                      <p className="mb-3 px-2 text-[9px] font-semibold uppercase tracking-wider text-gray-400">
-                        Forms
-                      </p>
-
-                      <div className="space-y-2">
-                        <div className="rounded-lg bg-gray-50 px-3 py-2 text-[10px] font-medium text-gray-600">
-                          Customer Feedback
-                        </div>
-
-                        <div className="px-3 py-2 text-[10px] text-gray-400">
-                          Event Registration
-                        </div>
-
-                        <div className="px-3 py-2 text-[10px] text-gray-400">
-                          Product Survey
+                        <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">
+                          <BarChart3 className="h-4 w-4" /> Analytics
                         </div>
                       </div>
                     </div>
                   </aside>
 
-                  {/* Builder */}
+                  {/* Canvas */}
                   <div className="flex min-w-0 flex-1 flex-col">
-                    {/* Builder top bar */}
-                    <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 sm:px-6 sm:py-4">
+                    {/* Top Toolbar */}
+                    <div className="flex items-center justify-between border-b border-gray-200/60 bg-white px-5 py-3.5">
                       <div className="min-w-0 text-left">
-                        <p className="truncate text-xs font-semibold text-gray-800 sm:text-sm">
+                        <p className="truncate text-sm font-bold text-gray-900">
                           Customer Feedback
                         </p>
-
-                        <p className="mt-0.5 text-[9px] text-gray-400 sm:text-[10px]">
-                          4 fields · Last saved just now
+                        <p className="text-[10px] text-gray-400">
+                          4 fields · Auto-saved
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <div className="hidden rounded-lg border border-gray-200 px-3 py-2 text-[10px] font-medium text-gray-500 sm:block">
+                        <div className="hidden rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 sm:block">
                           Preview
                         </div>
-
-                        <div className="rounded-lg bg-indigo-600 px-3 py-2 text-[10px] font-semibold text-white shadow-sm sm:px-4">
+                        <div className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm">
                           Publish
                         </div>
                       </div>
                     </div>
 
-                    {/* Builder body */}
-                    <div className="flex flex-1 gap-4 p-3 sm:gap-6 sm:p-6">
-                      {/* Fields editor */}
+                    {/* Builder Body */}
+                    <div className="flex flex-1 gap-5 p-4 sm:p-6">
                       <div className="min-w-0 flex-1">
-                        <div className="mb-3 flex items-center justify-between">
-                          <div>
-                            <p className="text-left text-[10px] font-semibold text-gray-700 sm:text-xs">
-                              Form fields
-                            </p>
-                            <p className="text-left text-[8px] text-gray-400 sm:text-[9px]">
-                              Build and organize your form
-                            </p>
-                          </div>
-
-                          <div className="hidden items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-[8px] font-medium text-gray-400 sm:flex">
-                            <GripVertical className="h-3 w-3" />
-                            Drag to reorder
-                          </div>
-                        </div>
-
-                        {/* Field 1 */}
-                        <div className="group mb-2 rounded-xl border border-gray-200 bg-white p-3 text-left shadow-sm sm:mb-3 sm:p-4">
+                        {/* Interactive Drag Fields */}
+                        <div className="group mb-3 rounded-xl border border-indigo-200 bg-white p-4 text-left shadow-sm ring-2 ring-indigo-500/10">
                           <div className="mb-2 flex items-center justify-between">
-                            <div className="flex min-w-0 items-center gap-2">
-                              <GripVertical className="h-3 w-3 shrink-0 text-gray-300" />
-
-                              <p className="truncate text-[9px] font-semibold text-gray-700 sm:text-[10px]">
+                            <div className="flex items-center gap-2">
+                              <GripVertical className="h-4 w-4 text-indigo-400 cursor-grab" />
+                              <p className="text-xs font-bold text-gray-800">
                                 What is your name?
                               </p>
                             </div>
-
-                            <span className="hidden rounded-md bg-gray-50 px-2 py-1 text-[8px] text-gray-400 sm:block">
-                              Short text
+                            <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[9px] font-semibold text-indigo-600">
+                              Short Text
                             </span>
                           </div>
-
-                          <div className="h-8 rounded-lg border border-gray-200 bg-gray-50 sm:h-9" />
+                          <div className="h-9 rounded-lg border border-gray-200 bg-gray-50/50" />
                         </div>
 
-                        {/* Field 2 */}
-                        <div className="mb-2 rounded-xl border border-indigo-200 bg-white p-3 text-left shadow-sm ring-1 ring-indigo-50 sm:mb-3 sm:p-4">
-                          <div className="mb-3 flex items-center justify-between">
-                            <div className="flex min-w-0 items-center gap-2">
-                              <GripVertical className="h-3 w-3 shrink-0 text-indigo-300" />
-
-                              <p className="truncate text-[9px] font-semibold text-gray-700 sm:text-[10px]">
+                        <div className="mb-3 rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <GripVertical className="h-4 w-4 text-gray-300" />
+                              <p className="text-xs font-bold text-gray-800">
                                 How satisfied are you?
                               </p>
                             </div>
-
-                            <span className="hidden rounded-md bg-indigo-50 px-2 py-1 text-[8px] text-indigo-500 sm:block">
-                              Multiple choice
+                            <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[9px] font-medium text-gray-500">
+                              Choice
                             </span>
                           </div>
-
-                          <div className="space-y-2">
+                          <div className="space-y-1.5">
                             {[
                               "Very satisfied",
                               "Satisfied",
-                              "Not satisfied",
-                            ].map((option, index) => (
+                              "Needs Improvement",
+                            ].map((opt, i) => (
                               <div
-                                key={option}
+                                key={opt}
                                 className="flex items-center gap-2"
                               >
                                 <span
-                                  className={`h-3.5 w-3.5 rounded-full border ${
-                                    index === 0
-                                      ? "border-indigo-400 ring-2 ring-indigo-50"
-                                      : "border-gray-300"
-                                  }`}
+                                  className={`h-3 w-3 rounded-full border ${i === 0 ? "border-indigo-600 bg-indigo-600" : "border-gray-300"}`}
                                 />
-
-                                <span className="text-[8px] text-gray-500 sm:text-[9px]">
-                                  {option}
+                                <span className="text-[10px] font-medium text-gray-600">
+                                  {opt}
                                 </span>
                               </div>
                             ))}
                           </div>
                         </div>
 
-                        {/* Field 3 */}
-                        <div className="mb-2 hidden rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm sm:block">
-                          <div className="mb-3 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <GripVertical className="h-3 w-3 text-gray-300" />
-
-                              <p className="text-[10px] font-semibold text-gray-700">
-                                Rate your experience
-                              </p>
-                            </div>
-
-                            <span className="rounded-md bg-gray-50 px-2 py-1 text-[8px] text-gray-400">
-                              Rating
-                            </span>
-                          </div>
-
-                          <div className="flex gap-1.5">
-                            {[1, 2, 3, 4, 5].map((rating) => (
-                              <div
-                                key={rating}
-                                className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200"
-                              >
-                                <Star className="h-3 w-3 text-gray-300" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Add field */}
-                        <div className="mt-3 flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 bg-white/70 py-2.5 text-[9px] font-medium text-gray-400 sm:mt-4 sm:py-3">
-                          <Plus className="h-3.5 w-3.5" />
-                          Add a field
+                        <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/60 py-3 text-xs font-semibold text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors cursor-pointer">
+                          <Plus className="h-4 w-4" /> Add New Field
                         </div>
                       </div>
 
-                      {/* Live preview */}
-                      <div className="hidden w-[42%] max-w-sm rounded-xl border border-gray-200 bg-white p-4 shadow-sm lg:block">
-                        <div className="mb-4 flex items-center justify-between">
-                          <div>
-                            <p className="text-[10px] font-semibold text-gray-700">
-                              Live preview
-                            </p>
-
-                            <p className="mt-0.5 text-[8px] text-gray-400">
-                              What your users will see
-                            </p>
-                          </div>
-
-                          <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[8px] font-medium text-emerald-600">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      {/* Right Panel: Live Preview Card */}
+                      <div className="hidden w-72 rounded-xl border border-gray-200/80 bg-white p-4 shadow-sm lg:block text-left">
+                        <div className="mb-3 flex items-center justify-between">
+                          <p className="text-xs font-bold text-gray-800">
+                            Live Preview
+                          </p>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold text-emerald-600">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />{" "}
                             Live
                           </span>
                         </div>
 
-                        <div className="rounded-lg bg-gray-50 p-4">
-                          <div className="mx-auto max-w-[220px] text-left">
-                            <div className="mb-5">
-                              <div className="h-3 w-28 rounded bg-gray-800/10" />
-                              <div className="mt-2 h-2 w-36 rounded bg-gray-200" />
+                        <div className="rounded-lg border border-gray-100 bg-gray-50 p-3.5 space-y-3">
+                          <div>
+                            <label className="text-[10px] font-bold text-gray-700">
+                              What is your name?
+                            </label>
+                            <div className="mt-1 h-7 rounded bg-white border border-gray-200" />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-bold text-gray-700">
+                              How satisfied are you?
+                            </label>
+                            <div className="mt-1 space-y-1">
+                              <div className="h-4 w-24 rounded bg-indigo-100/60" />
+                              <div className="h-4 w-20 rounded bg-gray-200/60" />
                             </div>
-
-                            <div className="space-y-4">
-                              <div>
-                                <p className="mb-2 text-[8px] font-medium text-gray-600">
-                                  What is your name?
-                                </p>
-
-                                <div className="h-7 rounded-md border border-gray-200 bg-white" />
-                              </div>
-
-                              <div>
-                                <p className="mb-2 text-[8px] font-medium text-gray-600">
-                                  How satisfied are you?
-                                </p>
-
-                                <div className="space-y-1.5">
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-3 w-3 rounded-full border border-indigo-400" />
-                                    <span className="text-[7px] text-gray-400">
-                                      Very satisfied
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-3 w-3 rounded-full border border-gray-300" />
-                                    <span className="text-[7px] text-gray-400">
-                                      Satisfied
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-3 w-3 rounded-full border border-gray-300" />
-                                    <span className="text-[7px] text-gray-400">
-                                      Not satisfied
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="mt-5 flex justify-end">
-                              <div className="flex items-center gap-1 rounded-md bg-indigo-600 px-3 py-1.5 text-[8px] font-semibold text-white">
-                                Submit
-                                <Send className="h-2.5 w-2.5" />
-                              </div>
+                          </div>
+                          <div className="pt-2 flex justify-end">
+                            <div className="rounded bg-indigo-600 px-3 py-1 text-[9px] font-bold text-white flex items-center gap-1">
+                              Submit <Send className="h-2 w-2" />
                             </div>
                           </div>
                         </div>
@@ -444,70 +327,46 @@ function HomePage() {
               </div>
             </div>
           </div>
-
-          {/* Trust line */}
-          <div className="mt-10 flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-3">
-            <div className="flex -space-x-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-indigo-100 text-[9px] font-bold text-indigo-600">
-                A
-              </div>
-              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-purple-100 text-[9px] font-bold text-purple-600">
-                M
-              </div>
-              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-emerald-100 text-[9px] font-bold text-emerald-600">
-                J
-              </div>
-            </div>
-
-            <p className="text-xs text-gray-400">
-              Simple forms. Better responses. Less busywork.
-            </p>
-          </div>
         </div>
       </section>
 
       {/* =========================================================
-          FEATURES
+          FEATURES SECTION
       ========================================================= */}
       <section
         id="features"
-        className="scroll-mt-24 border-t border-gray-100 bg-gray-50/60 px-4 py-20 sm:px-6 sm:py-24 lg:px-8"
+        className="relative border-t border-gray-100 bg-gray-50/50 px-4 py-24 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <span className="text-sm font-semibold text-indigo-600">
-              Powerful by design
+          <div className="mx-auto mb-16 max-w-2xl text-center">
+            <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase">
+              Powerful Capabilities
             </span>
-
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-              Everything you need
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl">
+              Built for speed and simplicity
             </h2>
-
-            <p className="mt-4 text-base leading-7 text-gray-500 sm:text-lg">
-              Everything you need to create, share, and understand your forms.
+            <p className="mt-3 text-base text-gray-600">
+              Everything required to collect high-quality data without friction.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {features.map((feature) => {
               const Icon = feature.icon;
-
               return (
                 <div
                   key={feature.title}
-                  className="group rounded-2xl border border-gray-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/50"
+                  className="group relative rounded-2xl border border-gray-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10 text-left"
                 >
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${feature.iconClass}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 ${feature.iconClass}`}
                   >
                     <Icon className="h-6 w-6" />
                   </div>
-
-                  <h3 className="mt-6 text-lg font-semibold text-gray-900">
+                  <h3 className="mt-6 text-xl font-bold text-gray-900">
                     {feature.title}
                   </h3>
-
-                  <p className="mt-3 text-sm leading-6 text-gray-500">
+                  <p className="mt-2.5 text-sm leading-relaxed text-gray-600">
                     {feature.description}
                   </p>
                 </div>
@@ -522,38 +381,30 @@ function HomePage() {
       ========================================================= */}
       <section
         id="how-it-works"
-        className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 sm:py-24 lg:px-8"
+        className="px-4 py-24 sm:px-6 lg:px-8 bg-white"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-14 max-w-2xl text-center">
-            <span className="text-sm font-semibold text-indigo-600">
-              Simple workflow
+          <div className="mx-auto mb-16 max-w-2xl text-center">
+            <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase">
+              Workflow
             </span>
-
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-              How it works
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl">
+              Three steps to results
             </h2>
-
-            <p className="mt-4 text-base leading-7 text-gray-500 sm:text-lg">
-              From an empty canvas to useful responses in three simple steps.
-            </p>
           </div>
 
           <div className="relative grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-            {/* Connector */}
-            <div className="absolute left-[16.66%] right-[16.66%] top-8 hidden border-t border-dashed border-gray-200 md:block" />
+            <div className="absolute left-[16%] right-[16%] top-10 hidden border-t-2 border-dashed border-indigo-100 md:block" />
 
             {steps.map((step) => (
               <div key={step.number} className="relative z-10 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-100 bg-white text-lg font-bold text-indigo-600 shadow-lg shadow-indigo-100">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-indigo-100 bg-white text-xl font-black text-indigo-600 shadow-xl shadow-indigo-100">
                   {step.number}
                 </div>
-
-                <h3 className="mt-5 text-lg font-semibold text-gray-900">
+                <h3 className="mt-6 text-lg font-bold text-gray-900">
                   {step.title}
                 </h3>
-
-                <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-gray-500">
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-gray-600">
                   {step.description}
                 </p>
               </div>
@@ -565,25 +416,22 @@ function HomePage() {
       {/* =========================================================
           FINAL CTA
       ========================================================= */}
-      <section className="px-4 pb-20 sm:px-6 sm:pb-28 lg:px-8">
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-600 to-purple-600 px-6 py-12 text-center shadow-2xl shadow-indigo-200 sm:px-12 sm:py-16">
-          <div className="mx-auto max-w-2xl">
-            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white/15">
-              <Sparkles className="h-6 w-6 text-white" />
-            </div>
+      <section className="px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-indigo-600 px-6 py-16 text-center shadow-2xl shadow-indigo-500/30 sm:px-12 sm:py-20">
+          <div className="pointer-events-none absolute inset-0 -z-0 bg-[radial-gradient(circle_at_top_right,#818cf8,transparent_50%)] opacity-50" />
 
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to build your first form?
+          <div className="relative z-10 mx-auto max-w-2xl">
+            <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+              Start capturing better responses today.
             </h2>
-
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-indigo-100 sm:text-lg">
-              Create your first form, publish it, and start collecting responses
-              in minutes.
+            <p className="mx-auto mt-4 max-w-xl text-base text-indigo-100 sm:text-lg">
+              Set up your first form in less than 2 minutes. No credit card
+              required.
             </p>
 
             <Link
               to="/signup"
-              className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-base font-semibold text-indigo-600 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-xl"
+              className="group mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-indigo-600 shadow-xl transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-50"
             >
               Get Started Free
               <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
