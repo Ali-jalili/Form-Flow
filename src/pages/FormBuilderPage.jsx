@@ -219,7 +219,7 @@ function FormBuilderPage() {
 
   if ((fieldsLoading || formLoading) && formId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50/30">
+      <div className="flex h-screen w-screen items-center justify-center bg-slate-50">
         <Spinner />
       </div>
     );
@@ -227,7 +227,7 @@ function FormBuilderPage() {
 
   return (
     <FormProvider {...formMethods}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50/20">
+      <div className="flex h-screen w-full flex-col overflow-hidden bg-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
         <FormBuilderHeader
           title={title}
           onTitleChange={(newTitle) =>
@@ -237,6 +237,7 @@ function FormBuilderPage() {
           }
           onBack={() => navigate(-1)}
           onPreviewToggle={() => setShowPreview((current) => !current)}
+          showPreview={showPreview}
           onSave={handleSubmit(handleSave)}
           onPublish={handlePublish}
           isSaving={isSaving}
@@ -250,25 +251,27 @@ function FormBuilderPage() {
           onDismiss={() => setPublishedUrl(null)}
         />
 
-        <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-7xl flex-col lg:flex-row">
-          {/* Form Builder */}
+        <main className="relative flex flex-1 overflow-hidden">
           <div
-            className={`${
-              showPreview ? "hidden lg:flex" : "flex"
-            } min-w-0 flex-1`}
+            className={`
+              w-full flex-1 overflow-y-auto transition-all duration-300 lg:block lg:w-1/2 lg:border-r lg:border-slate-200/80
+              ${showPreview ? "hidden" : "block"}
+            `}
           >
-            <FormFieldsEditor />
+            <div className="mx-auto max-w-3xl p-4 sm:p-6 lg:p-8">
+              <FormFieldsEditor />
+            </div>
           </div>
 
-          {/* Live Preview */}
           <div
-            className={`${
-              showPreview ? "flex" : "hidden lg:flex"
-            } min-w-0 flex-1`}
+            className={`
+              w-full flex-1 overflow-y-auto bg-slate-50 transition-all duration-300 lg:block lg:w-1/2
+              ${showPreview ? "block" : "hidden"}
+            `}
           >
             <FormPreview />
           </div>
-        </div>
+        </main>
       </div>
     </FormProvider>
   );
