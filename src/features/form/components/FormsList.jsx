@@ -1,42 +1,33 @@
 /** @format */
 
 import { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { useQueryClient } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
-import { Plus, FileText, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, Search, Layers } from "lucide-react";
 
 import useAuth from "../../Auth/useAuth";
-
 import { createForm } from "../services/formsService";
-
 import FormCard from "./FormCard";
 
 function FormsList({ data }) {
   const { user } = useAuth();
-
   const navigate = useNavigate();
-
   const queryClient = useQueryClient();
 
   const [isCreating, setIsCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterTab, setFilterTab] = useState("all"); // 'all' | 'published' | 'draft'
 
   async function handleCreateForm() {
     if (isCreating) return;
-
     setIsCreating(true);
 
     try {
       const newForm = await createForm(user.id);
-
       await queryClient.invalidateQueries({
         queryKey: ["forms", user.id],
       });
-
       navigate(`/builder/${newForm.id}`);
     } catch (error) {
       toast.error(error.message || "Something went wrong.");
@@ -44,33 +35,35 @@ function FormsList({ data }) {
     }
   }
 
-  const formCount = data.length;
+  // فیلتر و سرچ فرم‌ها
+  const filteredData = data.filter((form) => {
+    const matchesSearch = (form.title || "Untitled Form")
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesFilter =
+      filterTab === "all"
+        ? true
+        : filterTab === "published"
+          ? form.is_published
+          : !form.is_published;
+
+    return matchesSearch && matchesFilter;
+  });
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <section>
+      {/* Forms Header & Actions */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="mb-3 flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
-              <FileText className="h-5 w-5 text-indigo-600" />
-            </div>
-
-            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
-              {formCount} {formCount === 1 ? "form" : "forms"}
-            </span>
-          </div>
-
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
             My Forms
-          </h1>
-
-          <p className="mt-1.5 text-sm text-gray-500">
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
             Create, manage, and publish your forms.
           </p>
         </div>
 
-        {/* New Form */}
         <button
           type="button"
           onClick={handleCreateForm}
@@ -93,101 +86,73 @@ function FormsList({ data }) {
             transition-all
             duration-200
             hover:bg-indigo-700
-            hover:shadow-xl
-            hover:shadow-indigo-200
+            hover:shadow-indigo-300
             active:scale-[0.98]
             disabled:cursor-not-allowed
             disabled:opacity-60
             sm:w-auto
           "
         >
-          {isCreating ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            <>
-              <Plus className="h-4 w-4" />
-              New Form
-            </>
-          )}
+          <Plus className="h-4 w-4" />
+          New Form
         </button>
       </div>
 
-      {/* Empty State */}
-      {formCount === 0 && (
-        <div
-          className="
-            flex
-            min-h-[360px]
-            flex-col
-            items-center
-            justify-center
-            rounded-2xl
-            border
-            border-dashed
-            border-gray-200
-            bg-white/60
-            px-6
-            text-center
-          "
-        >
-          <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50">
-            <FileText className="h-7 w-7 text-indigo-500" />
-          </div>
-
-          <h2 className="text-lg font-semibold text-gray-900">No forms yet</h2>
-
-          <p className="mt-2 max-w-sm text-sm leading-6 text-gray-500">
-            Create your first form and start collecting responses.
-          </p>
-
-          <button
-            type="button"
-            onClick={handleCreateForm}
-            disabled={isCreating}
-            className="
-              mt-6
-              inline-flex
-              items-center
-              gap-2
-              rounded-xl
-              bg-indigo-600
-              px-4
-              py-2.5
-              text-sm
-              font-semibold
-              text-white
-              transition-colors
-              hover:bg-indigo-700
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          >
-            <Plus className="h-4 w-4" />
-            Create your first form
-          </button>
+      {/* Search Bar & Filter Tabs */}
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        {/* Tab Filters */}
+        <div className="flex items-center rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
+          {[
+            { id: "all", label: `All (${data.length})` },
+            { id: "published", label: "Published" },
+            { id: "draft", label: "Drafts" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setFilterTab(tab.id)}
+              className={`rounded-lg px-4 py-1.5 text-xs font-semibold transition ${
+                filterTab === tab.id
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-      )}
+
+        {/* Search Input */}
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search forms..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-xl border border-slate-200/90 bg-white py-2 pl-9 pr-4 text-xs outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10"
+          />
+        </div>
+      </div>
 
       {/* Forms Grid */}
-      {formCount > 0 && (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {data.map((item) => (
+      {filteredData.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredData.map((item) => (
             <FormCard key={item.id} dataForm={item} />
           ))}
         </div>
-      )}
-
-      {/* Footer hint */}
-      {formCount > 0 && (
-        <div className="mt-8 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-          <span>Manage your forms from here</span>
-          <ArrowRight className="h-3 w-3" />
+      ) : (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center">
+          <Layers className="h-8 w-8 text-slate-300" />
+          <p className="mt-3 text-sm font-semibold text-slate-700">
+            No forms found
+          </p>
+          <p className="mt-1 text-xs text-slate-400">
+            No forms match your search or filter criteria.
+          </p>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

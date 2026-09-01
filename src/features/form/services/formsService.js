@@ -102,18 +102,12 @@ async function publishForm(formId) {
 }
 
 async function submitResponse(formId, answers) {
-  const { data, error } = await supabase
-    .from("responses")
-    .insert({
-      form_id: formId,
-      data: answers,
-    })
-    .select()
-    .single();
+  const { error } = await supabase.from("responses").insert({
+    form_id: formId,
+    data: answers,
+  });
 
   if (error) throw new Error(error.message);
-
-  return data;
 }
 
 async function deleteForm(formId) {

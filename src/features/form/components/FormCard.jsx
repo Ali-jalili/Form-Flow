@@ -1,9 +1,7 @@
 /** @format */
 
 import { Link, useNavigate } from "react-router-dom";
-
 import DeleteFormModal from "../../../components/ui/DeleteFormModal";
-
 import {
   Calendar,
   Edit3,
@@ -12,27 +10,20 @@ import {
   ExternalLink,
   CheckCircle2,
   FileText,
+  Clock,
 } from "lucide-react";
-
 import { useQueryClient } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
 import { useState } from "react";
-
 import { deleteForm } from "../services/formsService";
-
 import useAuth from "../../Auth/useAuth";
 
 function FormCard({ dataForm }) {
   const navigate = useNavigate();
-
   const queryClient = useQueryClient();
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const { user } = useAuth();
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const isPublished = dataForm.is_published;
@@ -49,7 +40,6 @@ function FormCard({ dataForm }) {
   function handleDelete(event) {
     event.preventDefault();
     event.stopPropagation();
-
     setShowDeleteModal(true);
   }
 
@@ -64,7 +54,6 @@ function FormCard({ dataForm }) {
       });
 
       toast.success("Form deleted successfully!");
-
       setShowDeleteModal(false);
     } catch {
       toast.error("Failed to delete form.");
@@ -76,7 +65,6 @@ function FormCard({ dataForm }) {
   function handleResponses(event) {
     event.preventDefault();
     event.stopPropagation();
-
     navigate(`/responses/${dataForm.id}`);
   }
 
@@ -94,34 +82,36 @@ function FormCard({ dataForm }) {
       <article
         className="
           group
+          relative
           flex
-          min-h-[180px]
+          min-h-[195px]
           flex-col
           justify-between
           rounded-2xl
           border
-          border-gray-100
+          border-slate-200/80
           bg-white
           p-5
           shadow-sm
           transition-all
-          duration-200
-          hover:-translate-y-0.5
-          hover:border-indigo-100
-          hover:shadow-md
+          duration-300
+          hover:-translate-y-1
+          hover:border-slate-300
+          hover:shadow-xl
+          hover:shadow-slate-200/50
         "
       >
-        {/* Header */}
+        {/* Top Header Section */}
         <div>
           <div className="mb-4 flex items-start justify-between gap-3">
-            {/* Form icon */}
+            {/* Form status icon */}
             <div
               className={`
-                flex h-10 w-10 shrink-0 items-center justify-center rounded-xl
+                flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300
                 ${
                   isPublished
-                    ? "bg-emerald-50 text-emerald-600"
-                    : "bg-gray-50 text-gray-400"
+                    ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/10 group-hover:scale-105"
+                    : "bg-amber-50/80 text-amber-600 ring-1 ring-amber-500/10 group-hover:scale-105"
                 }
               `}
             >
@@ -132,7 +122,7 @@ function FormCard({ dataForm }) {
               )}
             </div>
 
-            {/* Status */}
+            {/* Status Badge */}
             <span
               className={`
                 inline-flex items-center gap-1.5
@@ -140,11 +130,13 @@ function FormCard({ dataForm }) {
                 px-2.5
                 py-1
                 text-[11px]
-                font-medium
+                font-semibold
+                tracking-wide
+                transition-all
                 ${
                   isPublished
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20"
+                    : "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20"
                 }
               `}
             >
@@ -153,41 +145,40 @@ function FormCard({ dataForm }) {
                   h-1.5
                   w-1.5
                   rounded-full
-                  ${isPublished ? "bg-emerald-500" : "bg-gray-400"}
+                  ${isPublished ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}
                 `}
               />
-
               {isPublished ? "Published" : "Draft"}
             </span>
           </div>
 
-          {/* Title */}
+          {/* Form Title */}
           <h3
             className="
-              mb-2
+              mb-1.5
               truncate
-              text-sm
-              font-semibold
-              text-gray-900
+              text-base
+              font-bold
+              text-slate-900
               transition-colors
-              group-hover:text-indigo-700
+              duration-200
+              group-hover:text-indigo-600
             "
-            title={dataForm.title}
+            title={dataForm.title || "Untitled Form"}
           >
-            {dataForm.title}
+            {dataForm.title || "Untitled Form"}
           </h3>
 
-          {/* Date */}
-          <div className="flex items-center gap-1.5 text-xs text-gray-400">
-            <Calendar className="h-3.5 w-3.5" />
-
+          {/* Created Date */}
+          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+            <Calendar className="h-3.5 w-3.5 text-slate-400" />
             <span>Created {formattedDate}</span>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-6 flex items-center justify-between gap-3">
-          {/* Public form */}
+        {/* Footer Actions Section */}
+        <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3.5">
+          {/* Public Link Action */}
           <div>
             {isPublished && dataForm.public_id ? (
               <button
@@ -198,44 +189,55 @@ function FormCard({ dataForm }) {
                   items-center
                   gap-1.5
                   rounded-lg
-                  px-2.5
-                  py-1.5
+                  px-2
+                  py-1
                   text-xs
-                  font-medium
+                  font-semibold
                   text-indigo-600
-                  transition-colors
+                  transition-all
+                  duration-200
                   hover:bg-indigo-50
                   hover:text-indigo-700
+                  active:scale-95
                 "
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 View form
               </button>
             ) : (
-              <span className="text-xs text-gray-300">Not published</span>
+              <span className="flex items-center gap-1 text-[11px] font-medium text-slate-400">
+                <Clock className="h-3 w-3" />
+                Not published
+              </span>
             )}
           </div>
 
-          {/* Actions */}
+          {/* Right Action Icons */}
           <div className="flex items-center gap-1">
-            {/* Edit */}
+            {/* Edit Button */}
             <Link
               to={`/builder/${dataForm.id}`}
               aria-label="Edit form"
               title="Edit form"
               className="
+                flex
+                h-8
+                w-8
+                items-center
+                justify-center
                 rounded-lg
-                p-2
-                text-gray-400
-                transition-colors
-                hover:bg-indigo-50
+                text-slate-400
+                transition-all
+                duration-200
+                hover:bg-slate-100
                 hover:text-indigo-600
+                active:scale-95
               "
             >
               <Edit3 className="h-4 w-4" />
             </Link>
 
-            {/* Responses */}
+            {/* View Responses Button */}
             {isPublished && (
               <button
                 type="button"
@@ -243,19 +245,25 @@ function FormCard({ dataForm }) {
                 aria-label="View responses"
                 title="View responses"
                 className="
+                  flex
+                  h-8
+                  w-8
+                  items-center
+                  justify-center
                   rounded-lg
-                  p-2
-                  text-gray-400
-                  transition-colors
+                  text-slate-400
+                  transition-all
+                  duration-200
                   hover:bg-emerald-50
                   hover:text-emerald-600
+                  active:scale-95
                 "
               >
                 <BarChart3 className="h-4 w-4" />
               </button>
             )}
 
-            {/* Delete */}
+            {/* Delete Button */}
             <button
               type="button"
               onClick={handleDelete}
@@ -263,12 +271,18 @@ function FormCard({ dataForm }) {
               aria-label="Delete form"
               title="Delete form"
               className="
+                flex
+                h-8
+                w-8
+                items-center
+                justify-center
                 rounded-lg
-                p-2
-                text-gray-400
-                transition-colors
+                text-slate-400
+                transition-all
+                duration-200
                 hover:bg-rose-50
                 hover:text-rose-600
+                active:scale-95
                 disabled:cursor-not-allowed
                 disabled:opacity-40
               "
