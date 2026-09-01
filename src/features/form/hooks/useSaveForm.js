@@ -10,14 +10,19 @@ function useSaveForm(formId) {
 
   return useMutation({
     mutationFn: async (values) => {
-      await saveFormFields(formId, values.fields);
+      const fieldsWithOrder = (values.fields || []).map((field, index) => ({
+        ...field,
+        order: index + 1,
+      }));
+
+      await saveFormFields(formId, fieldsWithOrder);
       await updateFormTitle(formId, values.title);
 
       return values;
     },
 
     onSuccess: (values) => {
-      queryClient.setQueryData(["forms", user.id], (old) =>
+      queryClient.setQueryData(["forms", user?.id], (old) =>
         old?.map((form) =>
           form.id === formId
             ? {
@@ -28,9 +33,11 @@ function useSaveForm(formId) {
         ),
       );
 
-      queryClient.invalidateQueries({
-        queryKey: ["forms", user.id],
-      });
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: ["forms", user.id],
+        });
+      }
       queryClient.invalidateQueries({
         queryKey: ["form", formId],
       });
