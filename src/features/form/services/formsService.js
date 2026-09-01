@@ -2,7 +2,6 @@
 
 import { supabase } from "../../../lib/supabaseClient";
 
-/** @format */
 async function createForm(userId) {
   const { data, error } = await supabase
     .from("forms")
@@ -12,7 +11,7 @@ async function createForm(userId) {
     })
     .select()
     .single();
-  if (error) throw error.message;
+  if (error) throw new Error(error.message);
   return data;
 }
 
@@ -44,7 +43,41 @@ async function saveFormFields(formId, fields) {
     .insert(fieldsToInsert)
     .select();
 
-  if (error) throw error.message;
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+async function getFormsByUser(userId) {
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+async function getForm(formId) {
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*")
+    .eq("id", formId)
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+async function getFormFields(formId) {
+  const { data, error } = await supabase
+    .from("form_fields")
+    .select("*")
+    .eq("form_id", formId);
+
+  if (error) throw new Error(error.message);
+
   return data;
 }
 
@@ -53,7 +86,7 @@ async function updateFormTitle(formId, title) {
     .from("forms")
     .update({ title })
     .eq("id", formId);
-  if (error) throw error.message;
+  if (error) throw new Error(error.message);
 }
 
 async function publishForm(formId) {
@@ -64,49 +97,17 @@ async function publishForm(formId) {
     .update({ is_published: true, public_id: publicId })
     .eq("id", formId);
 
-  if (error) throw error.message;
+  if (error) throw new Error(error.message);
   return publicId;
 }
 
-// async function submitResponse(formId, answers) {
-//   const { data, error } = await supabase
-//     .from("responses")
-//     .insert({
-//       form_id: formId,
-//       data: answers,
-//     })
-//     .select()
-//     .single();
-
-//   if (error) throw error.message;
-//   return data;
-// }
-
 async function submitResponse(formId, answers) {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/responses`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${supabaseAnonKey}`,
-    },
-    body: JSON.stringify({
-      form_id: formId,
-      data: answers,
-    }),
+  const { error } = await supabase.from("responses").insert({
+    form_id: formId,
+    data: answers,
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || "Failed to submit response");
-  }
-
-  // Body ممکنه خالی باشه
-  const text = await response.text();
-  return text ? JSON.parse(text) : {};
+  if (error) throw new Error(error.message);
 }
 
 async function deleteForm(formId) {
@@ -123,6 +124,9 @@ async function deleteForm(formId) {
 export {
   createForm,
   saveFormFields,
+  getFormsByUser,
+  getForm,
+  getFormFields,
   updateFormTitle,
   publishForm,
   submitResponse,

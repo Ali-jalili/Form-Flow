@@ -1,6 +1,7 @@
 /** @format */
 
 import { useQuery } from "@tanstack/react-query";
+
 import { supabase } from "../../../lib/supabaseClient";
 
 function usePublicForm(publicId) {
@@ -12,16 +13,24 @@ function usePublicForm(publicId) {
       .eq("is_published", true)
       .single();
 
+    if (formError) {
+      throw new Error(formError.message);
+    }
+
     const { data: fieldsData, error: fieldsError } = await supabase
       .from("form_fields")
       .select("*")
       .eq("form_id", formData.id)
       .order("order");
 
-    if (fieldsError) throw fieldsError;
-    if (formError) throw formError;
+    if (fieldsError) {
+      throw new Error(fieldsError.message);
+    }
 
-    return { form: formData, fields: fieldsData };
+    return {
+      form: formData,
+      fields: fieldsData,
+    };
   }
 
   const { data, isLoading, error } = useQuery({

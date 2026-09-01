@@ -1,118 +1,241 @@
 /** @format */
 
 import { useParams, Link } from "react-router-dom";
-import useResponses from "../features/form-builder/hooks/useResponses";
-import Spinner from "../ui/components/Spinner";
-import ErrorMessage from "../ui/components/ErrorMessage";
-import useFormFields from "../features/form-builder/hooks/useFormFields";
-import useForms from "../features/form-builder/hooks/useForms";
+
+import useResponses from "../features/form/hooks/useResponses";
+import useFormFields from "../features/form/hooks/useFormFields";
+import useForms from "../features/form/hooks/useForms";
+
+import ErrorMessage from "../components/ui/ErrorMessage";
+import Spinner from "../components/ui/Spinner";
+
 import {
   ArrowLeft,
   MessageSquare,
-  Calendar,
-  User,
   BarChart3,
+  FileText,
+  Inbox,
+  Clock,
+  Sparkles,
 } from "lucide-react";
 
 function ResponsesPage() {
   const { formId } = useParams();
+
   const { data: responses, isLoading, error } = useResponses(formId);
   const { data: fieldsData } = useFormFields(formId);
   const { data: formsList } = useForms();
-  const formData = formsList?.find((f) => f.id === formId);
+
+  const formData = formsList?.find((form) => form.id === formId);
 
   if (isLoading) return <Spinner />;
-  if (error) return <ErrorMessage message={error.message} />;
 
-  if (responses) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-indigo-600 transition-colors mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
+  if (error) {
+    return <ErrorMessage message={error.message} />;
+  }
 
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-indigo-600" />
+  if (!responses) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-50/60 pb-16 pt-6">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        {/* Navigation & Header */}
+        <header className="mb-8">
+          <Link
+            to="/dashboard"
+            className="
+              group
+              mb-5
+              inline-flex
+              items-center
+              gap-2
+              text-xs
+              font-semibold
+              text-slate-500
+              transition-colors
+              duration-200
+              hover:text-indigo-600
+            "
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+            Back to Dashboard
+          </Link>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3.5">
+              {/* Header Icon */}
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50/80 text-indigo-600 shadow-sm">
+                <BarChart3 className="h-6 w-6" />
+              </div>
+
+              <div className="min-w-0">
+                <h1
+                  className="truncate text-xl font-bold tracking-tight text-slate-900 sm:text-2xl"
+                  title={formData?.title}
+                >
+                  {formData?.title || "Form Responses"}
+                </h1>
+
+                <div className="mt-1 flex items-center gap-2 text-xs font-medium text-slate-500">
+                  <span className="inline-flex items-center gap-1">
+                    <MessageSquare className="h-3.5 w-3.5 text-slate-400" />
+                    {responses.length}{" "}
+                    {responses.length === 1 ? "response" : "responses"} received
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Response Total Counter Card */}
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 px-4 shadow-sm sm:shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                <Sparkles className="h-4 w-4" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {formData?.title || "Responses"}
-                </h1>
-                <p className="text-sm text-gray-500 flex items-center gap-1.5">
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  {responses.length}{" "}
-                  {responses.length === 1 ? "response" : "responses"}
+                <p className="text-lg font-bold leading-none text-slate-900">
+                  {responses.length}
+                </p>
+                <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  Total Submissions
                 </p>
               </div>
             </div>
           </div>
+        </header>
 
-          {/* Responses List */}
+        {/* Empty State */}
+        {responses.length === 0 ? (
+          <div className="flex min-h-[380px] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white/60 p-8 text-center backdrop-blur-sm sm:p-12">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 shadow-inner">
+              <Inbox className="h-8 w-8" />
+            </div>
+
+            <h2 className="text-base font-bold text-slate-900 sm:text-lg">
+              No responses recorded yet
+            </h2>
+
+            <p className="mx-auto mt-1.5 max-w-sm text-xs leading-relaxed text-slate-500 sm:text-sm">
+              Share your form link to start receiving feedback and submission
+              data here.
+            </p>
+
+            <Link
+              to={`/builder/${formId}`}
+              className="
+                mt-6
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                bg-indigo-600
+                px-4
+                py-2.5
+                text-xs
+                font-semibold
+                text-white
+                shadow-md
+                shadow-indigo-200
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+                hover:bg-indigo-700
+                hover:shadow-lg
+                active:scale-95
+              "
+            >
+              <FileText className="h-4 w-4" />
+              Open Form Builder
+            </Link>
+          </div>
+        ) : (
+          /* Response List */
           <div className="space-y-4">
-            {responses.map((response) => (
-              <div
+            {responses.map((response, index) => (
+              <article
                 key={response.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200"
+                className="
+                  group
+                  relative
+                  overflow-hidden
+                  rounded-2xl
+                  border
+                  border-slate-200/80
+                  bg-white
+                  shadow-sm
+                  transition-all
+                  duration-200
+                  hover:border-slate-300
+                  hover:shadow-md
+                "
               >
-                {/* Date */}
-                <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
-                  <Calendar className="w-3.5 h-3.5" />
-                  {new Date(response.created_at).toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                {/* Left accent bar */}
+                <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500 transition-colors group-hover:bg-indigo-600" />
+
+                {/* Response Header */}
+                <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-5 py-3.5 sm:px-6">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600 ring-1 ring-indigo-500/10">
+                      #{index + 1}
+                    </span>
+                    <p className="text-xs font-bold text-slate-800 sm:text-sm">
+                      Submission #{index + 1}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+                    <Clock className="h-3.5 w-3.5 text-slate-400" />
+                    <span>
+                      {new Date(response.created_at).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Fields */}
-                <div className="space-y-3">
-                  {fieldsData?.map((field) => (
-                    <div key={field.id} className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <User className="w-3.5 h-3.5 text-gray-400" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-0.5">
+                {/* Answers Body */}
+                <div className="divide-y divide-slate-100/70 px-5 sm:px-6">
+                  {fieldsData?.map((field) => {
+                    const answer = response.data?.[field.id];
+                    const hasAnswer =
+                      answer !== null &&
+                      answer !== undefined &&
+                      String(answer).trim() !== "";
+
+                    return (
+                      <div
+                        key={field.id}
+                        className="py-3.5 first:pt-4 last:pb-4"
+                      >
+                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                           {field.label}
                         </p>
-                        <p className="text-sm text-gray-700">
-                          {response.data[field.id] || (
-                            <span className="text-gray-300 italic">
-                              No answer
+
+                        <div>
+                          {hasAnswer ? (
+                            <p className="whitespace-pre-wrap break-words text-sm font-medium text-slate-800">
+                              {String(answer)}
+                            </p>
+                          ) : (
+                            <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium italic text-slate-400">
+                              No answer provided
                             </span>
                           )}
-                        </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-
-          {/* Empty State */}
-          {responses.length === 0 && (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-gray-300" />
-              </div>
-              <p className="text-gray-500">No responses yet.</p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default ResponsesPage;
