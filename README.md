@@ -61,9 +61,8 @@ git clone https://github.com/Ali-jalili/FormFlow.git
 
 cd FormFlow
 
-npm install
-
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ---
