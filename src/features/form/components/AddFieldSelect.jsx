@@ -1,7 +1,6 @@
 /** @format */
 
 import { useEffect, useRef, useState } from "react";
-
 import {
   Check,
   ChevronDown,
@@ -11,21 +10,23 @@ import {
   Type,
 } from "lucide-react";
 
+import { FORM_FIELD_TYPES } from "../utils/form.types";
+
 const FIELD_OPTIONS = [
   {
-    type: "short_text",
+    type: FORM_FIELD_TYPES.SHORT_TEXT,
     label: "Short text",
     description: "A single line answer",
     icon: Type,
   },
   {
-    type: "long_text",
+    type: FORM_FIELD_TYPES.LONG_TEXT,
     label: "Long text",
     description: "A longer written response",
     icon: FileText,
   },
   {
-    type: "multiple_choice",
+    type: FORM_FIELD_TYPES.MULTIPLE_CHOICE,
     label: "Multiple choice",
     description: "Let users choose an option",
     icon: ListChecks,
@@ -57,7 +58,6 @@ function AddFieldSelect({ onAddField }) {
 
   return (
     <div ref={menuRef} className="relative">
-      {/* Trigger */}
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
@@ -102,18 +102,17 @@ function AddFieldSelect({ onAddField }) {
         />
       </button>
 
-      {/* Menu */}
       {isOpen && (
         <div
           role="menu"
           className="
-            absolute bottom-full left-0 z-30 mb-2 w-full
+            absolute top-full left-0 z-30 mt-2 w-full
             overflow-hidden rounded-2xl
             border border-gray-200
             bg-white
             p-2
             shadow-xl shadow-gray-200/60
-            animate-in fade-in slide-in-from-bottom-2
+            animate-in fade-in slide-in-from-top-2
             duration-200
           "
         >

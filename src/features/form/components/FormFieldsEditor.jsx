@@ -1,170 +1,151 @@
 /** @format */
 
-import { DndContext } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
-import { FileText, Grip, Plus, Sparkles, WandSparkles } from "lucide-react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { useFormContext, useFieldArray } from "react-hook-form";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import SortableField from "./SortableField";
 import AddFieldSelect from "./AddFieldSelect";
+import { FORM_FIELD_TYPES } from "../utils/form.types";
+import { LayoutGrid, Layers } from "lucide-react";
 
-function FormFieldsEditor() {
+export default function FormFieldsEditor() {
   const { control } = useFormContext();
-
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "fields",
   });
 
-  function addField(type) {
-    append({
+  const [activeId, setActiveId] = useState(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 6,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const fieldIds = useMemo(() => fields.map((field) => field.id), [fields]);
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((field) => field.id === active.id);
+      const newIndex = fields.findIndex((field) => field.id === over.id);
+      move(oldIndex, newIndex);
+    }
+    setActiveId(null);
+  };
+
+  const handleAddField = (type) => {
+    const newField = {
       id: crypto.randomUUID(),
       type,
       label: "",
       required: false,
-      options: type === "multiple_choice" ? [""] : [],
-      order: fields.length + 1,
-    });
-  }
+      options: type === FORM_FIELD_TYPES.MULTIPLE_CHOICE ? ["", ""] : [],
+    };
+    append(newField);
+  };
 
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = fields.findIndex((field) => field.id === active.id);
-
-    const newIndex = fields.findIndex((field) => field.id === over.id);
-
-    if (oldIndex === -1 || newIndex === -1) return;
-
-    move(oldIndex, newIndex);
-  }
-
-  return (
-    <section className="flex min-w-0 flex-1 flex-col bg-gradient-to-b from-gray-50/80 via-white to-white lg:border-r lg:border-gray-100">
-      {/* Header */}
-      <div className="sticky top-0 z-10 border-b border-gray-100 bg-white/85 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-              <WandSparkles className="h-4 w-4" />
-            </div>
-
-            <div className="min-w-0">
-              <h2 className="text-sm font-semibold text-gray-900">
-                Build your form
-              </h2>
-
-              <p className="mt-0.5 text-xs text-gray-400">
-                Add, edit and organize your fields
-              </p>
-            </div>
-          </div>
-
-          {fields.length > 0 && (
-            <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 shadow-sm">
-              <FileText className="h-3.5 w-3.5 text-indigo-500" />
-
-              <span>
-                {fields.length} {fields.length === 1 ? "field" : "fields"}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Fields */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
-        {fields.length === 0 ? (
-          <EmptyFieldsState />
-        ) : (
-          <DndContext onDragEnd={handleDragEnd}>
-            <SortableContext items={fields.map((field) => field.id)}>
-              <div className="mx-auto max-w-3xl space-y-4 pb-8">
-                {fields.map((field, index) => (
-                  <div key={field.id} className="group relative">
-                    <SortableField
-                      field={field}
-                      index={index}
-                      control={control}
-                      remove={remove}
-                    />
-                  </div>
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
-      </div>
-
-      {/* Add Field */}
-      <div className="sticky bottom-0 z-10 border-t border-gray-100 bg-white/90 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-2.5 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-semibold text-gray-600">
-              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-indigo-50 text-indigo-600">
-                <Plus className="h-3 w-3" />
-              </div>
-              Add a field
-            </div>
-
-            {fields.length > 0 && (
-              <span className="hidden text-[11px] text-gray-400 sm:block">
-                Drag fields to reorder
-              </span>
-            )}
-          </div>
-
-          <AddFieldSelect onAddField={addField} />
-        </div>
-      </div>
-    </section>
+  const activeField = useMemo(
+    () => fields.find((f) => f.id === activeId),
+    [activeId, fields],
   );
-}
 
-function EmptyFieldsState() {
   return (
-    <div className="flex min-h-[55vh] items-center justify-center px-4">
-      <div className="w-full max-w-md text-center">
-        {/* Illustration */}
-        <div className="relative mx-auto mb-7 flex h-24 w-24 items-center justify-center">
-          <div className="absolute inset-0 rounded-3xl bg-indigo-100/50 blur-xl" />
-
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-purple-50 shadow-sm">
-            <Sparkles className="h-8 w-8 text-indigo-500" />
-
-            <div className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border-4 border-white bg-indigo-600 shadow-sm">
-              <Plus className="h-3.5 w-3.5 text-white" />
-            </div>
-          </div>
-        </div>
-
-        {/* Copy */}
-        <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
-            <Sparkles className="h-3 w-3" />
-            Let&apos;s get started
+    <div className="space-y-6 pb-12">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all sm:p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <LayoutGrid className="h-4 w-4 text-indigo-600" />
+            Add Field
+          </label>
+          <span className="text-xs font-medium text-slate-400">
+            {fields.length} {fields.length === 1 ? "field" : "fields"} added
           </span>
+        </div>
+        <AddFieldSelect onAddField={handleAddField} />
+      </div>
 
-          <h3 className="mt-4 text-xl font-bold tracking-tight text-gray-900">
-            Your form is empty
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={fieldIds}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-4">
+            {fields.map((field, index) => (
+              <SortableField
+                key={field.id}
+                field={field}
+                index={index}
+                onRemove={() => remove(index)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+
+        <DragOverlay>
+          {activeField ? (
+            <div className="opacity-90 shadow-2xl ring-2 ring-indigo-500/50 rounded-2xl bg-white">
+              <SortableField
+                field={activeField}
+                index={fields.findIndex((f) => f.id === activeId)}
+                onRemove={() => {}}
+                isOverlay
+              />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+
+      {fields.length === 0 && (
+        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 px-4 py-12 text-center transition-all hover:bg-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
+            <Layers className="h-6 w-6" />
+          </div>
+          <h3 className="mt-4 text-sm font-bold text-slate-800">
+            No fields added yet
           </h3>
-
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-gray-500">
-            Start by adding your first question. You can customize it and
-            rearrange your fields anytime.
+          <p className="mt-1 max-w-xs text-xs text-slate-500">
+            Select a field type from the panel above to start building your
+            form.
           </p>
         </div>
-
-        {/* Hint */}
-        <div className="mx-auto mt-7 flex w-fit items-center gap-2 rounded-xl border border-gray-100 bg-white px-4 py-2.5 text-xs text-gray-400 shadow-sm">
-          <Grip className="h-3.5 w-3.5" />
-          <span>Add multiple fields and drag to reorder</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
-
-export default FormFieldsEditor;

@@ -1,16 +1,26 @@
 /** @format */
 
 import { useSortable } from "@dnd-kit/sortable";
-
+import { CSS } from "@dnd-kit/utilities";
 import { Circle, GripVertical, Trash2, X, Plus } from "lucide-react";
+import { useController, useFormContext } from "react-hook-form";
 
-import { useController } from "react-hook-form";
+import { FORM_FIELD_TYPES } from "../utils/form.types";
 
-function SortableField({ field, index, control, remove }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: field.id,
-    });
+function SortableField({ field, index, onRemove, isOverlay = false }) {
+  const { control } = useFormContext();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: field.id,
+    disabled: isOverlay,
+  });
 
   const labelField = useController({
     name: `fields.${index}.label`,
@@ -28,15 +38,13 @@ function SortableField({ field, index, control, remove }) {
   });
 
   const style = {
-    transform: `translateY(${transform?.y ?? 0}px)`,
+    transform: CSS.Transform.toString(transform),
     transition,
   };
 
   function handleOptionChange(optionIndex, value) {
     const options = [...(optionsField.field.value || [])];
-
     options[optionIndex] = value;
-
     optionsField.field.onChange(options);
   }
 
@@ -44,46 +52,41 @@ function SortableField({ field, index, control, remove }) {
     const options = (optionsField.field.value || []).filter(
       (_, currentIndex) => currentIndex !== optionIndex,
     );
-
     optionsField.field.onChange(options);
   }
 
   function handleAddOption() {
     const options = optionsField.field.value || [];
-    const lastOption = options[options.length - 1];
-
-    if (lastOption?.trim() === "") return;
-
     optionsField.field.onChange([...options, ""]);
   }
 
   const fieldTypeLabel = {
-    short_text: "Short answer",
-    long_text: "Long answer",
-    multiple_choice: "Multiple choice",
+    [FORM_FIELD_TYPES.SHORT_TEXT]: "Short answer",
+    [FORM_FIELD_TYPES.LONG_TEXT]: "Long answer",
+    [FORM_FIELD_TYPES.MULTIPLE_CHOICE]: "Multiple choice",
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="group rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm transition-all duration-200 hover:border-indigo-200 hover:shadow-md sm:p-4"
+      className={`group rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm transition-all duration-200 hover:border-indigo-200 hover:shadow-md sm:p-4 ${
+        isDragging ? "opacity-30" : ""
+      }`}
     >
       <div className="flex items-start gap-2.5">
-        {/* Drag Handle */}
         <button
           type="button"
           {...attributes}
           {...listeners}
           aria-label="Drag field"
+          style={{ touchAction: "none" }}
           className="mt-1 cursor-grab rounded-lg p-1 text-gray-300 transition-colors hover:bg-indigo-50 hover:text-indigo-400 active:cursor-grabbing"
         >
           <GripVertical className="h-5 w-5" />
         </button>
 
-        {/* Main Content */}
         <div className="min-w-0 flex-1">
-          {/* Field Header */}
           <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="flex h-6 min-w-6 items-center justify-center rounded-md bg-indigo-50 px-1.5 text-[11px] font-semibold text-indigo-600">
@@ -97,15 +100,14 @@ function SortableField({ field, index, control, remove }) {
 
             <button
               type="button"
-              onClick={() => remove(index)}
+              onClick={onRemove}
               aria-label="Delete field"
-              className="rounded-lg p-1.5 text-gray-300 opacity-0 transition-all hover:bg-rose-50 hover:text-rose-500 group-hover:opacity-100"
+              className="rounded-lg p-1.5 text-gray-400 hover:bg-rose-50 hover:text-rose-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
             >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Label */}
           <div className="mb-3">
             <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wide text-gray-400">
               Question
@@ -119,7 +121,6 @@ function SortableField({ field, index, control, remove }) {
             />
           </div>
 
-          {/* Required */}
           <label className="flex w-fit cursor-pointer items-center gap-2 text-xs text-gray-500">
             <input
               type="checkbox"
@@ -133,8 +134,7 @@ function SortableField({ field, index, control, remove }) {
             <span>Required question</span>
           </label>
 
-          {/* Multiple Choice Options */}
-          {field.type === "multiple_choice" && (
+          {field.type === FORM_FIELD_TYPES.MULTIPLE_CHOICE && (
             <div className="mt-3 border-t border-gray-100 pt-3">
               <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
                 Answer options
@@ -162,7 +162,7 @@ function SortableField({ field, index, control, remove }) {
                       type="button"
                       onClick={() => handleRemoveOption(optionIndex)}
                       aria-label={`Remove option ${optionIndex + 1}`}
-                      className="rounded-md p-1 text-gray-300 opacity-0 transition-all hover:bg-rose-50 hover:text-rose-500 group-hover/option:opacity-100"
+                      className="rounded-md p-1 text-gray-400 hover:bg-rose-50 hover:text-rose-500 opacity-100 sm:opacity-0 sm:group-hover/option:opacity-100 transition-all"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
