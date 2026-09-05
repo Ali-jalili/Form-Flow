@@ -31,7 +31,7 @@ A modern full-stack form builder built with React and Supabase, enabling users t
 - React Router
 - TanStack React Query
 - Context API
-- useReducer
+- React Hook Form
 
 ### Backend
 
